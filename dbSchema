@@ -1,0 +1,12 @@
+Node:
+1.Recipe
+    -name
+    -id
+    -image
+    -rating
+    -procedure
+
+2.Ingredients
+    -name
+    -image
+    -id

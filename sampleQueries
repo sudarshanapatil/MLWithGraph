@@ -1,0 +1,6 @@
+//delete all nodes and relationships
+MATCH (n) DETACH DELETE n;
+
+//delete specific node
+MATCH (n:Person { name: 'UNKNOWN' })
+DELETE n

@@ -1,34 +1,110 @@
-var express = require('express');
+const neo4j = require('neo4j-driver').v1;
+const cheerio = require('cheerio')
+const dataset = require('./train.json')
 var request = require('request');
-var app = express();
+var driver = neo4j.driver(
+  'bolt://localhost:7687',
+  neo4j.auth.basic('neo4j', 'sudri@123')
+)
+const session = driver.session();
 
-var txUrl = "http://localhost:7474/db/data/transaction/commit";
+createIngredientNode = () => {
+  const nodeName = 'Ingredient'
+  let ingredients = dataset[0].ingredients
+  let query = `CREATE`
+  let counterId = 1;
+  for (let i in ingredients) {
+    let identifier = ingredients[i].replace(/\s/g, '')
+    console.log(typeof i, i, (ingredients.length - 1))
+    if (parseInt(i) === (ingredients.length - 1)) {
+      query = query + `(${identifier}:${nodeName} { name: '${ingredients[i]}', image: 'tobeadd',id:${counterId} })`
+    }
+    else {
+      query = query + `(${identifier}:${nodeName} { name: '${ingredients[i]}', image: 'tobeadd',id:${counterId} }),`
+    }
+    counterId++
+  }
 
-app.get('/', function (req, res) {
-  res.send('<h2>This is a demo of neo4j, a graph database</h2>');
-});
+  console.log(query)
+  const resultPromise = session.run(query);
+  resultPromise.then(result => {
+    session.close();
+    console.log(result, "data")
+    // on application exit:
+    driver.close();
+  });
+  resultPromise.catch((err) => {
+    console.log(err)
+  })
 
-
-app.get('/data', function (req, res) {
-
-});
-
-app.post('/data', function (req, res) {
-
-});
-var neo4j = require('neo4j');
-try {
-  
-  var db = new neo4j.GraphDatabase('http://localhost:7474');
-} catch (error) {
-  console.log(error)
 }
 
-var node = db.createNode({hello: 'world'});     // instantaneous, but...
-node.save(function (err, node) {    // ...this is what actually persists.
-    if (err) {
-        console.error('Error saving new node to database:', err);
-    } else {
-        console.log('Node saved to database with id:', node.id);
-    }
-});
+createRecipeNode = () => {
+  console.log("in create recipe")
+  const nodeName = `Recipe`
+  let query = `CREATE (PaneerLazeez:${nodeName} { name: 'PaneerLazeez', image: 'tobeadd',id:1,procedure:'tobeadd',rating:0 })`
+  const resultPromise = session.run(query);
+  resultPromise.then(result => {
+    session.close();
+    console.log(result, "data")
+    // on application exit:
+    driver.close();
+  });
+  resultPromise.catch((err) => {
+    console.log(err)
+  })
+}
+
+createRelationship = () => {
+  console.log("in create relationship")
+  const nodeName = `Recipe`
+  let query = `MATCH (PaneerLazeez:Recipe),(garlic:Ingredient)
+   CREATE (PaneerLazeez)-[r:Includes]->(garlic)
+  RETURN type(r)`
+  const resultPromise = session.run(query);
+  resultPromise.then(result => {
+    session.close();
+    console.log(result, "data")
+    // on application exit:
+    driver.close();
+  });
+  resultPromise.catch((err) => {
+    console.log(err)
+  })
+
+}
+
+getRecipe = () => {
+  console.log("in get data")
+  const nodeName = `Recipe`
+  let query = `MATCH (Recipe { name: 'PaneerLazeez' })--(Ingredient)
+RETURN Ingredient.name`
+  const resultPromise = session.run(query);
+  resultPromise.then(result => {
+    session.close();
+    console.log(result, "data")
+    // on application exit:
+    driver.close();
+  });
+  resultPromise.catch((err) => {
+    console.log(err)
+  })
+}
+//createRecipeNode()
+//createIngredientNode()
+//createRelationship()
+getRecipe()
+
+
+
+
+// request('https://food.ndtv.com/recipe-almond-white-chocolate-gujiya-953477',
+//   function (error, response, html) {
+//     if (!error && response.statusCode == 200) {
+//       //console.log(html);
+//       var $ = cheerio.load(html);
+//       let data = $('script').get();
+//       console.log(data, "*******")
+//     }
+//   });
+
