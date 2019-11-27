@@ -15,6 +15,15 @@ RETURN i.name as Almonds ORDER BY Almonds
 
 -------------------------------------query----------------------------------------------------
 ----------------------------------------------------------------------------------------------
+
+MATCH (r:Recipe)
+WHERE (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {name: "chilli"})
+RETURN r.name AS recipe, 
+       [(r)-[:CONTAINS_INGREDIENT]->(i) | i.name] 
+       AS ingredients
+
+-------------------------------------query----------------------------------------------------
+----------------------------------------------------------------------------------------------
 CREATE INDEX ON :Recipe(id);
 CREATE INDEX ON :Ingredient(name);
 CREATE INDEX ON :Keyword(name);
