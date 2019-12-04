@@ -7,12 +7,34 @@ var driver = neo4j.driver(
   neo4j.auth.basic('neo4j', 'sudri@123')
 )
 console.log("Connected to neo4j")
+const cors = require('cors')
 const session = driver.session();
 
 const app = express()
+app.use(cors())
 app.use(morgan('tiny'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.get('/getallingredients', (req, res) => {
+  console.log("in get data")
+  let query = `MATCH (n:Ingredient) RETURN n limit 5`
+  const resultPromise = session.run(query);
+  resultPromise.then(result => {
+    session.close();
+    console.log(result, "data")
+    let ingredients = result.records.map(i => {
+      return i["_fields"][0].properties.name
+    })
+    res.send(ingredients)
+    // on application exit:
+    driver.close();
+  });
+  resultPromise.catch((err) => {
+    console.log(err)
+  })
+})
+
 app.get('/getall', (req, res) => {
   console.log("in get data")
   const nodeName = `Recipe`
@@ -32,6 +54,27 @@ app.get('/getall', (req, res) => {
     console.log(err)
   })
 })
+
+app.get('/getrecipe', (req, res) => {
+  console.log("in get data")
+  const nodeName = `Recipe`
+  let query = `MATCH (r:Recipe) WHERE (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {name: "chilli"}) 
+  RETURN r.name AS recipe, 
+         [(r)-[:CONTAINS_INGREDIENT]->(i) | i.name] 
+         AS ingredients`
+  const resultPromise = session.run(query);
+  resultPromise.then(result => {
+    session.close();
+    console.log(result, "data")
+    res.send(result)
+    // on application exit:
+    driver.close();
+  });
+  resultPromise.catch((err) => {
+    console.log(err)
+  })
+})
+
 
 app.post('/getrecipes', (req, res) => {
   console.log("in get data", req.body)
@@ -71,6 +114,10 @@ app.post('/getrecipes', (req, res) => {
   }
 
 })
+
+
+
+
 // Starting server
 const port = 1337
 app.listen(port)

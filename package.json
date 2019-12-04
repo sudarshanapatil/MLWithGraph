@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/sudarshanapatil/MLWithGraph/issues"
   },
-  "homepage": "https://github.com/sudarshanapatil/MLWithGraph#readme"
+  "homepage": "https://github.com/sudarshanapatil/MLWithGraph#readme",
+  "dependencies": {
+    "cors": "^2.8.5"
+  }
 }
