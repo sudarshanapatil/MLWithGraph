@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.get('/getallingredients', (req, res) => {
   console.log("in get data")
-  let query = `MATCH (n:Ingredient) RETURN n limit 5`
+  let query = `MATCH (n:Ingredient) RETURN n limit 30`
   const resultPromise = session.run(query);
   resultPromise.then(result => {
     session.close();
@@ -55,7 +55,7 @@ app.get('/getall', (req, res) => {
   })
 })
 
-app.get('/getrecipe', (req, res) => {
+app.get('/getdetailedrecipe', (req, res) => {
   console.log("in get data")
   const nodeName = `Recipe`
   let query = `MATCH (r:Recipe) WHERE (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {name: "chilli"}) 
