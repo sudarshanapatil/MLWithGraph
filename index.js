@@ -26,6 +26,7 @@ app.get('/getallingredients', (req, res) => {
     let ingredients = result.records.map(i => {
       return i["_fields"][0].properties.name
     })
+    ingredients=ingredients.sort()
     res.send(ingredients)
     // on application exit:
     driver.close();
@@ -79,7 +80,7 @@ app.get('/getdetailedrecipe', (req, res) => {
 app.post('/getrecipes', (req, res) => {
   console.log("in get data", req.body)
   let ingredients = req.body.ingredients;
-  
+
   let finalQ = ingredients.map((i, index) => {
     if (index === 0)
       return `WHERE (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {name: "${ingredients[0]}"})`
@@ -87,20 +88,38 @@ app.post('/getrecipes', (req, res) => {
       return `AND   (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {name: "${i}"})`
   })
 
-  finalQ=finalQ.join(" ")
+  finalQ = finalQ.join(" ")
   try {
     let query = `MATCH (r:Recipe) ${finalQ}
          RETURN r.name AS recipe, 
          [(r)-[:CONTAINS_INGREDIENT]->(i) | i.name] 
          AS ingredients`
-    console.log(query," : Query on database")
+    console.log(query, " : Query on database")
     const resultPromise = session.run(query);
     resultPromise.then(result => {
+      // console.log(result.records,"RecipesData================")
       session.close();
       let recipes = result.records.map(i => {
-        return i["_fields"][0]
+
+        return ({
+          recipe: i["_fields"][0],
+          ingredients: i["_fields"][1],
+          score: i["_fields"][1].length
+        })
+
+        // console.log(i["_fields"])
+        // return i["_fields"][0]
       })
-      console.log(recipes, " : data")
+
+      recipes = recipes.sort(function (a, b) {
+        let keyA = a.score,
+          keyB = b.score;
+        // Compare the 2 dates
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+      });
+      //console.log(recipes, " : data")
       res.send(recipes)
       driver.close();
     });

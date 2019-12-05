@@ -60,7 +60,8 @@ class App extends Component {
             </Form>
           </Navbar>
           <Row>
-            
+            {"Ingredients List"}
+            {}
           </Row>
           {
             this.state.ingredients.map((element, i) =>
