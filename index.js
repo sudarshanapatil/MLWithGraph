@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.get('/getallingredients', (req, res) => {
   console.log("in get data")
-  let query = `MATCH (n:Ingredient) RETURN n limit 30`
+  let query = `MATCH (n:Ingredient) RETURN n limit 50`
   const resultPromise = session.run(query);
   resultPromise.then(result => {
     session.close();

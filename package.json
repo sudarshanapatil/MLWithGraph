@@ -19,7 +19,9 @@
   "homepage": "https://github.com/sudarshanapatil/MLWithGraph#readme",
   "dependencies": {
     "bootstrap": "^4.4.1",
+    "cheerio": "^1.0.0-rc.3",
     "cors": "^2.8.5",
+    "csvjson-json_beautifier": "^5.0.4",
     "react-bootstrap": "^1.0.0-beta.16"
   }
 }
