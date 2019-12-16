@@ -13,6 +13,11 @@ WHERE i.name CONTAINS 'almond'
 RETURN i.name as Almonds ORDER BY Almonds
 
 
+//relationships
+(Person)-[:RATED {rating:00}]->(Movie)
+
+CREATE (a:Person {name: $name}) RETURN a
+
 -------------------------------------query----------------------------------------------------
 ----------------------------------------------------------------------------------------------
 
