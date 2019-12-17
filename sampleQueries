@@ -16,6 +16,57 @@ RETURN i.name as Almonds ORDER BY Almonds
 //relationships
 (Person)-[:RATED {rating:00}]->(Movie)
 
+MATCH (a:Person),(b:Person)
+WHERE a.name = 'A' AND b.name = 'B'
+CREATE (a)-[r:RELTYPE { name: a.name + '<->' + b.name }]->(b)
+RETURN type(r), r.name
+
+MATCH (a:Person),(b:Recipe)
+WHERE a.name = 'A' AND b.name = 'B'
+CREATE (a)-[r:Rated { rating:5 }]->(b)
+RETURN type(r), r.name
+
+//Assign Similarity
+MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Recipe]-(p2:Person)
+WITH  SUM(x.rating * y.rating) AS xyDotProduct,
+      SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
+      SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,
+      p1, p2
+MERGE (p1)-[s:SIMILARITY]-(p2)
+SET   s.similarity = xyDotProduct / (xLength * yLength)
+
+
+
+
+//To delete a relationship
+       MATCH (n { name: 'Abhishek' })-[r:Rated]->()
+       DELETE r
+
+//get data
+match  (p1:Person {name:'Nilesh'})-[r1:Rated]->(m:Recipe)<-[r2:Rated]-(p2:Person {name:'Sudarshana'})
+  RETURN m.name AS Recipe, r1.rating AS NileshRate, r2.rating AS SudduRate
+
+
+//Get SIMILARITY
+MATCH    (p1:Person {name:'Sudarshana'})-[s:SIMILARITY]-(p2:Person)
+WITH     p2, s.similarity AS sim
+ORDER BY sim DESC
+LIMIT    5
+RETURN   p2.name AS Neighbor, sim AS Similarity
+
+//Get recommendation
+MATCH    (b:Person)-[r:Rated]->(m:Recipe), (b)-[s:SIMILARITY]-(a:Person {name:'Jagrutee'})
+WHERE    NOT((a)-[:Rated]->(m))
+WITH     m, s.similarity AS similarity, r.rating AS rating
+ORDER BY m.name, similarity DESC
+WITH     m.name AS recipe, COLLECT(rating)[0..3] AS ratings
+WITH     recipe, REDUCE(s = 0, i IN ratings | s + i)*1.0 / LENGTH(ratings) AS reco
+ORDER BY reco DESC
+RETURN   recipe AS Recipe, reco AS Recommendation
+
+//Get a perticulat node
+MATCH (n:Person{ name: 'Nilesh' }) RETURN n
+
 CREATE (a:Person {name: $name}) RETURN a
 
 -------------------------------------query----------------------------------------------------
