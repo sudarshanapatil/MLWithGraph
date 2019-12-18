@@ -1,7 +1,7 @@
 const neo4j = require('neo4j-driver').v1
 // Neo4j credentials
 const driver = neo4j.driver(
-  'bolt://localhost:7687',
+  'bolt://localhost:11002',
   neo4j.auth.basic('neo4j', 'sudri@123')
 )
 const session = driver.session()
@@ -13,7 +13,7 @@ const userArr1 = [
   'Abhishek',
   'Sudarshana'
 ]
-const userArr = ['Jagrutee']
+const userArr = ['Pradnya']
 addUser = userArr => {
   userArr.map(eachUser => {
     let query = `merge (${eachUser}:Person {name: '${eachUser}'}) RETURN ${eachUser}`
@@ -21,13 +21,15 @@ addUser = userArr => {
     const resultPromise = session.run(query)
     resultPromise.then(result => {
       //Get recipe Data
-      let getRecipeQ = 'MATCH (n:Recipe) RETURN n limit 15'
+      let getRecipeQ = 'MATCH (n:Recipe) RETURN n limit 14'
       const recipeData = session.run(getRecipeQ)
       recipeData.then(data => {
-        let count = 6
+       // console.log(data,"recipes")
+        let count = 2
         let recipes = data.records.map(i => {
-          //console.log(i['_fields'][0].properties.name, eachUser)
-          if (count >= 10) count = 1
+          //console.log(i,"i")
+          console.log(i['_fields'][0].properties.name, eachUser)
+          if (count >= 10) count = 6
           let recipeName = i['_fields'][0].properties.name
           let userName = eachUser
           let relationQ = `MATCH (a:Person),(b:Recipe)
@@ -62,5 +64,15 @@ findSimilarity = () => {
   recipeData.catch(err => {
     console.log(err)
   })
+}
+
+assignSimilarity=()=>{
+  let query=`MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Rated]-(p2:Person)
+  WITH  SUM(x.rating * y.rating) AS xyDotProduct,
+        SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
+        SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,
+        p1, p2
+  MERGE (p1)-[s:SIMILARITY]-(p2)
+  SET   s.similarity = xyDotProduct / (xLength * yLength)`
 }
 //findSimilarity()

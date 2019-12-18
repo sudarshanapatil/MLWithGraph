@@ -1,7 +1,8 @@
 
 const express = require('express')
 const morgan = require('morgan')
-const neo4j = require('neo4j-driver').v1;
+const neo4j = require('neo4j-driver');
+console.log(neo4j)
 var driver = neo4j.driver(
   'bolt://localhost:11002',
   neo4j.auth.basic('neo4j', 'sudri@123')
@@ -21,7 +22,7 @@ app.get('/getallingredients', (req, res) => {
   let query = `MATCH (n:Ingredient) RETURN n limit 50`
   const resultPromise = session.run(query);
   resultPromise.then(result => {
-    session.close();
+    //session.close();
     console.log(result, "data")
     let ingredients = result.records.map(i => {
       return i["_fields"][0].properties.name
@@ -29,7 +30,7 @@ app.get('/getallingredients', (req, res) => {
     ingredients=ingredients.sort()
     res.send(ingredients)
     // on application exit:
-    driver.close();
+    //driver.close();
   });
   resultPromise.catch((err) => {
     console.log(err)
@@ -45,11 +46,11 @@ app.get('/getall', (req, res) => {
          AS ingredients`
   const resultPromise = session.run(query);
   resultPromise.then(result => {
-    session.close();
+    //session.close();
     console.log(result, "data")
     res.send(result)
     // on application exit:
-    driver.close();
+    //driver.close();
   });
   resultPromise.catch((err) => {
     console.log(err)
@@ -65,11 +66,11 @@ app.get('/getdetailedrecipe', (req, res) => {
          AS ingredients`
   const resultPromise = session.run(query);
   resultPromise.then(result => {
-    session.close();
+    //session.close();
     console.log(result, "data")
     res.send(result)
     // on application exit:
-    driver.close();
+    //driver.close();
   });
   resultPromise.catch((err) => {
     console.log(err)
@@ -98,7 +99,7 @@ app.post('/getrecipes', (req, res) => {
     const resultPromise = session.run(query);
     resultPromise.then(result => {
       // console.log(result.records,"RecipesData================")
-      session.close();
+     // session.close();
       let recipes = result.records.map(i => {
 
         return ({
@@ -121,7 +122,7 @@ app.post('/getrecipes', (req, res) => {
       });
       //console.log(recipes, " : data")
       res.send(recipes)
-      driver.close();
+     // driver.close();
     });
     resultPromise.catch((err) => {
       console.log(err)

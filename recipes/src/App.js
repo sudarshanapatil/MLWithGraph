@@ -86,6 +86,7 @@ class App extends Component {
           <Navbar.Brand href="#home">Recipe Recommendation System</Navbar.Brand>
           <Nav className="mr-auto">
             <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="#add">Add Recipe</Nav.Link>
           </Nav>
           <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
