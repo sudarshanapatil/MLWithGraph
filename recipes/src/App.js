@@ -5,13 +5,13 @@ import Contentbased from './component/Contentbased'
 import { Button, ButtonToolbar, Container, Row } from 'react-bootstrap'
 import './App.css'
 class App extends Component {
-  constructor () {
+  constructor() {
     super()
     this.state = {
       render: ''
     }
   }
-  handleClick (type) {
+  handleClick(type) {
     if (type === 'content') {
       console.log('contentbased')
       this.setState({ render: <Contentbased /> })
@@ -19,7 +19,7 @@ class App extends Component {
       this.setState({ render: <Collaborative /> })
     }
   }
-  render () {
+  render() {
     console.log(this.state.render)
     return (
       <div>
@@ -29,19 +29,18 @@ class App extends Component {
 
         <div class='titlebar'>
           Recipe Recommendation System
-          <ButtonToolbar>
+         
+        </div>
+        <ButtonToolbar>
             <Button variant='info' onClick={() => this.handleClick('content')}>
               ContentBased Filetering
             </Button>
             <Button
               variant='info'
-              onClick={() => this.handleClick('collaborative')}
-            >
+              onClick={() => this.handleClick('collaborative')}>
               Collaborative Filetering
             </Button>
           </ButtonToolbar>
-        </div>
-        <div id='navbar'></div>
 
         {this.state.render}
       </div>

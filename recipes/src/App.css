@@ -29,7 +29,7 @@
   height: 100%;
   width: 100%;
   background-color: grey;
-  margin: 2px;
+  /* margin: 2px; */
   /* // overflow-y: scroll; */
   display: inline-block;
 }
@@ -37,6 +37,13 @@
   widows: 100%;
   height: 50%;
   background-color: pink;
+}
+
+.recomTitle{
+background-color: aqua
+}
+.similarTitle{
+  background-color: aqua
 }
 
 #recomm-recipes-list {

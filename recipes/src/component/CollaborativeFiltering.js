@@ -1,19 +1,19 @@
 import React, { Component } from 'react'
 import '../App.css'
 
-import { Card, ButtonToolbar, Button ,ListGroup} from 'react-bootstrap'
+import { Card, ButtonToolbar, Button, ListGroup } from 'react-bootstrap'
 let userArr = [
   'Jagrutee',
   'Sudarshana',
   'Shweta',
-  'Nilesh',
-  'Akshay',
-  'Abhishek'
+  'Vishakha',
+  'Prajakta',
+  'Pradnya'
 ]
 const baseUrl = 'http://localhost:1337/'
 
 class Collaborative extends Component {
-  constructor () {
+  constructor() {
     super()
     this.state = {
       similarUser: [],
@@ -25,7 +25,7 @@ class Collaborative extends Component {
     }
   }
 
-  getRecipe (ingredients) {
+  getRecipe(ingredients) {
     if (ingredients.length === 0) {
       this.setState({
         recipes: []
@@ -52,7 +52,7 @@ class Collaborative extends Component {
     }
   }
 
-  getSimilarUser (userName) {
+  getSimilarUser(userName) {
     this.setState({ currentUser: userName })
     fetch(`${baseUrl}getsimilaruser`, {
       method: 'post',
@@ -67,20 +67,21 @@ class Collaborative extends Component {
       .then(res => res.json())
       .then(similarUser => {
         console.log(similarUser, 'similarUser')
-        fetch(`${baseUrl}getuserrating`, {
-          method: 'post',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userName
-          })
-        }).then(res => {
-          console.log('res: ', res)
-        })
-
         this.getRecom(userName, similarUser)
+        // fetch(`${baseUrl}getuserrating`, {
+        //   method: 'post',
+        //   headers: {
+        //     Accept: 'application/json',
+        //     'Content-Type': 'application/json'
+        //   },
+        //   body: JSON.stringify({
+        //     userName
+        //   })
+        // }).then(res => {
+        //   console.log('res: ', res)
+        // })
+
+
       })
       .catch(err => {
         console.log(err)
@@ -90,7 +91,7 @@ class Collaborative extends Component {
       })
   }
 
-  getRecom (userName, similarUser) {
+  getRecom(userName, similarUser) {
     fetch('http://localhost:1337/getuserrecommendation', {
       method: 'post',
       headers: {
@@ -114,7 +115,7 @@ class Collaborative extends Component {
       })
   }
 
-  render () {
+  render() {
     // if (this.state.recomRecipes.length > 0)
     //   this.setState({ title: <p>Recommended Recipes for </p> })
     return (
@@ -130,7 +131,10 @@ class Collaborative extends Component {
           </ButtonToolbar>
         </div>
         <div id='middle-container'>
-          <p>Most similar Users for {this.state.currentUser}</p>
+          <div class='similarTitle'>
+            <p>Most similar Users for {this.state.currentUser}</p>
+
+          </div>
           <table>
             <tr>
               {this.state.similarUser.map(row => (
@@ -142,7 +146,10 @@ class Collaborative extends Component {
           </table>
         </div>
         <div id='recomm-recipes-list'>
-          <p>Recommended Recipes for {this.state.currentUser}</p>
+          <div class='recomTitle'>
+
+            <p>Recommended Recipes for {this.state.currentUser}</p>
+          </div>
           {this.state.title}
           <ListGroup>
             {this.state.recomRecipes.map(i => (
