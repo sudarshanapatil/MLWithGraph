@@ -36,7 +36,7 @@ MERGE (p1)-[s:SIMILARITY]-(p2)
 SET   s.similarity = xyDotProduct / (xLength * yLength)
 
 
-
+MATCH (:Recipe {name: 'Citrus peach cooler'})-[r:Rated]-(b) RETURN r,b
 
 //To delete a relationship
        MATCH (n { name: 'Abhishek' })-[r:Rated]->()
@@ -44,7 +44,13 @@ SET   s.similarity = xyDotProduct / (xLength * yLength)
 
 //get data
 match  (p1:Person {name:'Nilesh'})-[r1:Rated]->(m:Recipe)<-[r2:Rated]-(p2:Person {name:'Sudarshana'})
-  RETURN m.name AS Recipe, r1.rating AS NileshRate, r2.rating AS SudduRate
+(p3:Person {name:'Jagrutee'})-[r3:Rated]->(m:Recipe)<-[r4:Rated]-(p4:Person {name:'Sudarshana'})
+  RETURN m.name AS Recipe, r1.rating AS NileshRate, r2.rating AS SudduRate,r3.rating AS jagz
+
+match  (p1:Person {name:'Nilesh'})-[r1:Rated]->(m:Recipe)<-[r2:Rated]-(p2:Person {name:'Sudarshana'}),
+(p3:Person {name:'Nilesh'})-[r3:Rated]->(m:Recipe)<-[r4:Rated]-(p4:Person {name:'Abhishek'}),
+(p3:Person {name:'Nilesh'})-[r5:Rated]->(m:Recipe)<-[r6:Rated]-(p5:Person {name:'Jagrutee'})
+  RETURN m.name AS Recipe, r1.rating AS NileshRate, r2.rating AS SudduRate,r4.rating AS abhi ,r6.rating AS jagz
 
 
 //Get SIMILARITY
