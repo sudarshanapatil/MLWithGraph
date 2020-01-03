@@ -1,11 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
-<<<<<<< HEAD
 const neo4j = require('neo4j-driver').v1
-=======
-const neo4j = require('neo4j-driver');
-console.log(neo4j)
->>>>>>> f8f16c96f92e956f16b41475b167b179e9612983
 var driver = neo4j.driver(
   'bolt://localhost:7687',
   neo4j.auth.basic('neo4j', 'sudri@123')
@@ -89,28 +84,17 @@ app.get('/getallingredients', (req, res) => {
   let query = `MATCH (n:Ingredient) RETURN n limit 50`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
-<<<<<<< HEAD
     session.close()
     console.log(result, 'data')
-=======
-    //session.close();
-    console.log(result, "data")
->>>>>>> f8f16c96f92e956f16b41475b167b179e9612983
     let ingredients = result.records.map(i => {
       return i['_fields'][0].properties.name
     })
     ingredients = ingredients.sort()
     res.send(ingredients)
     // on application exit:
-<<<<<<< HEAD
     driver.close()
   })
   resultPromise.catch(err => {
-=======
-    //driver.close();
-  });
-  resultPromise.catch((err) => {
->>>>>>> f8f16c96f92e956f16b41475b167b179e9612983
     console.log(err)
   })
 })
@@ -124,7 +108,6 @@ app.get('/getall', (req, res) => {
          AS ingredients`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
-<<<<<<< HEAD
     session.close()
     console.log(result, 'data')
     res.send(result)
@@ -132,15 +115,6 @@ app.get('/getall', (req, res) => {
     driver.close()
   })
   resultPromise.catch(err => {
-=======
-    //session.close();
-    console.log(result, "data")
-    res.send(result)
-    // on application exit:
-    //driver.close();
-  });
-  resultPromise.catch((err) => {
->>>>>>> f8f16c96f92e956f16b41475b167b179e9612983
     console.log(err)
   })
 })
@@ -154,7 +128,6 @@ app.get('/getdetailedrecipe', (req, res) => {
          AS ingredients`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
-<<<<<<< HEAD
     session.close()
     console.log(result, 'data')
     res.send(result)
@@ -162,15 +135,6 @@ app.get('/getdetailedrecipe', (req, res) => {
     driver.close()
   })
   resultPromise.catch(err => {
-=======
-    //session.close();
-    console.log(result, "data")
-    res.send(result)
-    // on application exit:
-    //driver.close();
-  });
-  resultPromise.catch((err) => {
->>>>>>> f8f16c96f92e956f16b41475b167b179e9612983
     console.log(err)
   })
 })
@@ -223,11 +187,7 @@ app.post('/getrecipes', (req, res) => {
     const resultPromise = session.run(query)
     resultPromise.then(result => {
       // console.log(result.records,"RecipesData================")
-<<<<<<< HEAD
       session.close()
-=======
-     // session.close();
->>>>>>> f8f16c96f92e956f16b41475b167b179e9612983
       let recipes = result.records.map(i => {
         return {
           recipe: i['_fields'][0],
@@ -249,15 +209,9 @@ app.post('/getrecipes', (req, res) => {
       })
       //console.log(recipes, " : data")
       res.send(recipes)
-<<<<<<< HEAD
       driver.close()
     })
     resultPromise.catch(err => {
-=======
-     // driver.close();
-    });
-    resultPromise.catch((err) => {
->>>>>>> f8f16c96f92e956f16b41475b167b179e9612983
       console.log(err)
       res.send(err)
     })
