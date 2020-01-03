@@ -1,3 +1,6 @@
+//get db schema
+CALL db.schema()
+
 //delete all nodes and relationships
 MATCH (n) DETACH DELETE n;
 
@@ -7,7 +10,7 @@ DELETE n
 
 
 //C:\Users\320069346\Documents\sudsWorkspace\nodejsWork\learnings\MLWithGraph\allData.josn
-
+/home/sudarshana/Documents/suduWorkspace/MLWithGraph/allData.json
 MATCH (i:Ingredient) 
 WHERE i.name CONTAINS 'almond' 
 RETURN i.name as Almonds ORDER BY Almonds
