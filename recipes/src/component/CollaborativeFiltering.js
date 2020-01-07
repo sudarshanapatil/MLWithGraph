@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import '../App.css'
 
-import { Card, ButtonToolbar, Button, ListGroup } from 'react-bootstrap'
+import { Card, ButtonToolbar, Button, ListGroup ,Container} from 'react-bootstrap'
 let userArr = [
   'Jagrutee',
   'Sudarshana',
@@ -13,7 +13,7 @@ let userArr = [
 const baseUrl = 'http://localhost:1337/'
 
 class Collaborative extends Component {
-  constructor() {
+  constructor () {
     super()
     this.state = {
       similarUser: [],
@@ -25,7 +25,7 @@ class Collaborative extends Component {
     }
   }
 
-  getRecipe(ingredients) {
+  getRecipe (ingredients) {
     if (ingredients.length === 0) {
       this.setState({
         recipes: []
@@ -52,7 +52,7 @@ class Collaborative extends Component {
     }
   }
 
-  getSimilarUser(userName) {
+  getSimilarUser (userName) {
     this.setState({ currentUser: userName })
     fetch(`${baseUrl}getsimilaruser`, {
       method: 'post',
@@ -80,8 +80,6 @@ class Collaborative extends Component {
         // }).then(res => {
         //   console.log('res: ', res)
         // })
-
-
       })
       .catch(err => {
         console.log(err)
@@ -91,7 +89,7 @@ class Collaborative extends Component {
       })
   }
 
-  getRecom(userName, similarUser) {
+  getRecom (userName, similarUser) {
     fetch('http://localhost:1337/getuserrecommendation', {
       method: 'post',
       headers: {
@@ -115,11 +113,11 @@ class Collaborative extends Component {
       })
   }
 
-  render() {
+  render () {
     // if (this.state.recomRecipes.length > 0)
     //   this.setState({ title: <p>Recommended Recipes for </p> })
     return (
-      <div>
+      <Container>
         <p class='sectionTitle'>Users List</p>
         <div id='user-list'>
           <ButtonToolbar>
@@ -133,7 +131,6 @@ class Collaborative extends Component {
         <div id='middle-container'>
           <div class='similarTitle'>
             <p>Most similar Users for {this.state.currentUser}</p>
-
           </div>
           <table>
             <tr>
@@ -147,7 +144,6 @@ class Collaborative extends Component {
         </div>
         <div id='recomm-recipes-list'>
           <div class='recomTitle'>
-
             <p>Recommended Recipes for {this.state.currentUser}</p>
           </div>
           {this.state.title}
@@ -159,7 +155,7 @@ class Collaborative extends Component {
         </div>
 
         <div></div>
-      </div>
+      </Container>
     )
   }
 }

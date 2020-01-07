@@ -1,6 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
-const neo4j = require('neo4j-driver')
+const neo4j = require('neo4j-driver').v1
 var driver = neo4j.driver(
   'bolt://localhost:11002',
   neo4j.auth.basic('neo4j', 'sudri@123'), {
