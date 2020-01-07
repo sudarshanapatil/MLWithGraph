@@ -24,10 +24,12 @@ class App extends Component {
   render () {
     return (
       <Container>
-        <Row>
-          <div class='titlebar'>Recipe Recommendation System</div>
-        </Row>
-        <Link to='/'>Home</Link>
+        <Router>
+          <Row>
+            <div class='titlebar'>Recipe Recommendation System</div>
+          </Row>
+          <Link to='/'>Login</Link>
+          <Link to='/home'>Home</Link>
         <Switch>
           <Route path='/content'>
             <Contentbased />
@@ -35,14 +37,17 @@ class App extends Component {
           <Route path='/collaborative'>
             <Collaborative />
           </Route>
-          <Route path='/login'>
-            <Login />
-          </Route>
           <Route path='/home'>
             <Home />
           </Route>
+          <Route path='/login'>
+            <Login />
+          </Route>
+          <Route path='/'>
+            <Login />
+          </Route>
         </Switch>
-        <Login />
+        </Router>
       </Container>
     )
   }

@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import '../App.css'
 
 import { Button, Col, Form, Row, Container } from 'react-bootstrap'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+
 class Login extends Component {
   constructor () {
     super()
@@ -34,7 +36,7 @@ class Login extends Component {
               Submit
             </Button>
             <Button variant='primary' type='submit' onClick={()=>this.showRegisterPage()}>
-              Register
+              <Link>Register</Link>
             </Button>
           </Form>
         </Row>
