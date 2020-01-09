@@ -11,6 +11,8 @@ import Register from './component/Register'
 import ContentBased from './component/Contentbased'
 import Collaborative from './component/CollaborativeFiltering'
 import AddRecipe from './component/AddRecipe'
+import RateRecipe from './component/RateRecipe'
+
 
 const routing = (
   <Router>
@@ -21,6 +23,7 @@ const routing = (
       <Route exact path="/content" component={ContentBased} />
       <Route exact path="/collaboration" component={Collaborative} />
       <Route exact path="/addRecipe" component={AddRecipe} />
+      <Route exact path="/rateRecipe" component={RateRecipe} />
     </Switch>
   </Router>
 )

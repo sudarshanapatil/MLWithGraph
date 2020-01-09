@@ -28,13 +28,16 @@ class Home extends Component {
           <div className='home-button-each'>
             <Link to='/addRecipe'>Add Recipe</Link>
           </div>
+          <div className='home-button-each'>
+            <Link to='/rateRecipe'>Rate Racipe</Link>
+          </div>
           {/* </ButtonToolbar> */}
         </div>
-        <div>
+        <div className='home-carousal'>
           <Carousel>
             <Carousel.Item>
               <img 
-              className='d-block w-100'
+              className="img-carousel"
               src={require('../images/host.jpg')} alt='First slide' />
               <Carousel.Caption>
                 <h3>First slide label</h3>
@@ -45,7 +48,7 @@ class Home extends Component {
             </Carousel.Item>
             <Carousel.Item>
               <img
-                className='d-block w-100'
+                className="img-carousel"
                 src={require('../images/recipe2.jpg')}
                 alt='Third slide'
               />

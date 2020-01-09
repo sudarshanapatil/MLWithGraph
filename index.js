@@ -38,6 +38,26 @@ app.get('/getallingredients', (req, res) => {
   })
 })
 
+app.get('/getallrecipes', (req, res) => {
+  console.log('in getallrecipes')
+  let query = `MATCH (n:Recipe) RETURN n limit 50`
+  const resultPromise = session.run(query)
+  resultPromise.then(result => {
+    //session.close()
+    console.log(result, 'data')
+    let ingredients = result.records.map(i => {
+      return i['_fields'][0].properties.name
+    })
+    ingredients = ingredients.sort()
+    res.send(ingredients)
+    // on application exit:
+    //driver.close()
+  })
+  resultPromise.catch(err => {
+    console.log(err)
+  })
+})
+
 app.post('/getrecipes', (req, res) => {
   //const session = driver.session()
   console.log('in getrecipes', req.body)

@@ -1,21 +1,7 @@
 import React, { Component } from 'react'
 import '../App.css'
 import Navbar from './Navbar'
-import {
-  Card,
-  ButtonToolbar,
-  Button,
-  ListGroup,
-  Container
-} from 'react-bootstrap'
-let userArr = [
-  'Jagrutee',
-  'Sudarshana',
-  'Shweta',
-  'Vishakha',
-  'Prajakta',
-  'Pradnya'
-]
+
 const baseUrl = 'http://localhost:1337/'
 
 class Collaborative extends Component {
@@ -29,6 +15,30 @@ class Collaborative extends Component {
       title: '',
       currentUser: ''
     }
+  }
+
+  componentDidMount(){
+    fetch('http://localhost:1337/getuserrecommendation', {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userName:'Spruha'
+      })
+    })
+      .then(res => res.json())
+      .then(recomRecipes => {
+        console.log(recomRecipes, 'recipeData')
+        this.setState({ recomRecipes })
+      })
+      .catch(err => {
+        console.log(err)
+        this.setState({
+          recomRecipes: []
+        })
+      })
   }
 
   getRecipe (ingredients) {
@@ -103,7 +113,7 @@ class Collaborative extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        userName
+        userName:'Spruha'
       })
     })
       .then(res => res.json())
@@ -126,10 +136,12 @@ class Collaborative extends Component {
         <p class='sectionTitle'>Recommended Recipes For You!</p>
 
         <div id='recomm-recipes-list'>
-          <div className='recomm-recipe-each'>Pavbhaji</div>
-          <div className='recomm-recipe-each'>Chole</div>
-          <div className='recomm-recipe-each'>Chole</div>
-          <div className='recomm-recipe-each'>Chole</div>
+          {
+            this.state.recomRecipes.map((recipe)=>{
+              return (<div className='recomm-recipe-each'>{recipe}</div>)
+            })
+          }
+          
         </div>
       </div>
     )

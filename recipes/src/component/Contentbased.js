@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import '../App.css'
-import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap'
+//import {  Nav, Form, FormControl, Button } from 'react-bootstrap'
+import Navbar from './Navbar'
 class Contentbased extends Component {
   constructor() {
     super()
@@ -82,7 +83,7 @@ class Contentbased extends Component {
   render() {
     return (
       <div>
-        
+        <Navbar/>
         <div class="container">
           <div id="ingredient-container">
             <h4 id="ingredient-heading">Select your ingredients</h4>

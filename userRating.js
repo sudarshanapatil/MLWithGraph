@@ -13,23 +13,72 @@ const userArr1 = [
   'Abhishek',
   'Sudarshana'
 ]
-const userArr = ['Pradnya']
+const userArr = [
+  'Madhav',
+  'Priya',
+  'Sukrut',
+  'Arnav',
+  'Gaurav',
+  'Nirav',
+  'Radhya',
+  'Stuti',
+  'Akshaya',
+  'Manas',
+  'Mrinal',
+  'Madhura',
+  'Keshav',
+  'Nritya',
+  'Prisha',
+  'Pratyusha',
+  'Mohan',
+  'Mihika',
+  'Nikhil',
+  'Girisha',
+  'Mithila',
+  'Janak',
+  'Jidnyasa',
+  'Aadnya',
+  'Sneha',
+  'Smruti',
+  'Samiksha',
+  'Spruha',
+  'Titiksha',
+  'Umesh',
+  'Vidit',
+  'Prasanna',
+  'Ramesh',
+  'Sarvesh',
+  'Parth',
+  'Vineet',
+  'Anshul',
+  'Praful',
+  'Aakash',
+  'Ninad',
+  'Ninant'
+
+]
 addUser = userArr => {
-  userArr.map(eachUser => {
+  userArr.map((eachUser,key) => {
+    console.log(key,"key")
     let query = `merge (${eachUser}:Person {name: '${eachUser}'}) RETURN ${eachUser}`
     console.log(query)
     const resultPromise = session.run(query)
     resultPromise.then(result => {
       //Get recipe Data
-      let getRecipeQ = 'MATCH (n:Recipe) RETURN n limit 14'
+      let count;
+      if(key>20)
+       count=parseInt(key)-20
+       else
+       count=15
+      let getRecipeQ = `MATCH (n:Recipe) RETURN n limit ${count}` 
       const recipeData = session.run(getRecipeQ)
       recipeData.then(data => {
-       // console.log(data,"recipes")
-        let count = 2
+        // console.log(data,"recipes")
+        let count = key
         let recipes = data.records.map(i => {
           //console.log(i,"i")
           console.log(i['_fields'][0].properties.name, eachUser)
-          if (count >= 10) count = 6
+          if (count >= 10) count = 3
           let recipeName = i['_fields'][0].properties.name
           let userName = eachUser
           let relationQ = `MATCH (a:Person),(b:Recipe)
@@ -38,13 +87,13 @@ addUser = userArr => {
           RETURN type(r), r.name`
           const recipeData = session.run(relationQ)
           recipeData.then(res => {
-            console.log(res)
+           // console.log(res)
           })
           recipeData.catch(err => {
             console.log(err)
           })
         })
-      })
+     })
     })
     resultPromise.catch(err => {
       console.log(err)
@@ -66,8 +115,8 @@ findSimilarity = () => {
   })
 }
 
-assignSimilarity=()=>{
-  let query=`MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Rated]-(p2:Person)
+assignSimilarity = () => {
+  let query = `MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Rated]-(p2:Person)
   WITH  SUM(x.rating * y.rating) AS xyDotProduct,
         SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
         SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,
