@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import '../App.css'
-import { Button, Col, Form, Row, Container } from 'react-bootstrap'
-class Login extends Component {
+import { Button, Form } from 'react-bootstrap'
+
+import { Link } from 'react-router-dom'
+class Register extends Component {
   constructor () {
     super()
   }
   render () {
     return (
-      <Container>
-        <Row></Row>
-        <Row>
+      <div className='register-body'>
+        <div className='register-section'>
           <Form>
             <Form.Group controlId='formBasicEmail'>
               <Form.Label>Email address</Form.Label>
@@ -28,12 +29,12 @@ class Login extends Component {
               <Form.Check type='checkbox' label='Check me out' />
             </Form.Group>
             <Button variant='primary' type='submit'>
-              Register
+              <Link to='/home'>Register</Link>
             </Button>
           </Form>
-        </Row>
-      </Container>
+        </div>
+      </div>
     )
   }
 }
-export default Login
+export default Register

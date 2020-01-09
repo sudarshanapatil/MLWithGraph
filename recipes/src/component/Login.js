@@ -1,21 +1,16 @@
 import React, { Component } from 'react'
 import '../App.css'
-
-import { Button, Col, Form, Row, Container } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-
 class Login extends Component {
   constructor () {
     super()
   }
-
   render () {
     return (
-      <Container>
-        <Row>
-
-        </Row>
-        <Row>
+      <div className='login-body'>
+        <div className='login-section'>
+          Recipe Recommendation System
           <Form>
             <Form.Group controlId='formBasicEmail'>
               <Form.Label>Email address</Form.Label>
@@ -32,15 +27,17 @@ class Login extends Component {
             <Form.Group controlId='formBasicCheckbox'>
               <Form.Check type='checkbox' label='Check me out' />
             </Form.Group>
-            <Button variant='primary' type='submit'>
-              Submit
+
+            <Button variant='warning' type='submit'>
+              <Link to='/home'>Login</Link>
             </Button>
-            <Button variant='primary' type='submit' onClick={()=>this.showRegisterPage()}>
-              <Link>Register</Link>
+
+            <Button variant='warning' type='submit'>
+              <Link to='/register'>Register</Link>
             </Button>
           </Form>
-        </Row>
-      </Container>
+        </div>
+      </div>
     )
   }
 }

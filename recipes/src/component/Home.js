@@ -1,16 +1,6 @@
 import React, { Component } from 'react'
-import Collaborative from './CollaborativeFiltering'
-import Contentbased from './Contentbased'
-import Login from './Login'
-
-import {
-  Button,
-  ButtonToolbar,
-  Container,
-  Row,
-  Carousel,
-  Col
-} from 'react-bootstrap'
+import { Button, ButtonToolbar, Carousel } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import '../App.css'
 class Home extends Component {
   constructor () {
@@ -19,52 +9,33 @@ class Home extends Component {
       render: ''
     }
   }
-  handleClick (type) {
-    if (type === 'Content') {
-      console.log('type', type)
-      this.setState({ render: <Contentbased /> })
-    } else if (type === 'Collaborative') {
-      this.setState({ render: <Collaborative /> })
-    } else {
-      this.setState({ render: <Login /> })
-    }
-  }
+
   render () {
     console.log(this.state.render)
     return (
-      <Container>
-        <Row>
-          <Col>
-            <div class='titlebar'>Recipe Recommendation System</div>
-          </Col>
-          <Col>
-            <ButtonToolbar>
-              <Button
-                variant='info'
-                onClick={() => this.handleClick('Content')}
-              >
-                ContentBased Filetering
-              </Button>
-              <Button
-                variant='info'
-                onClick={() => this.handleClick('Collaborative')}
-              >
-                Collaborative Filetering
-              </Button>
-              <Button variant='info' onClick={() => this.handleClick('Login')}>
-                Login
-              </Button>
-            </ButtonToolbar>
-          </Col>
-        </Row>
-        <Row>
+      <div>
+        <div class='titlebar'>Recipe Recommendation System</div>
+        <div className='home-buttons'>
+          {/* <ButtonToolbar> */}
+          <div className='home-button-each'>
+            <Link to='/content'>Find Recipes Based On Ingredients</Link>
+          </div>
+          <div className='home-button-each'>
+            <Link to='/collaboration'>
+              Recommended Recipes For You From Us!!
+            </Link>
+          </div>
+          <div className='home-button-each'>
+            <Link to='/addRecipe'>Add Recipe</Link>
+          </div>
+          {/* </ButtonToolbar> */}
+        </div>
+        <div>
           <Carousel>
             <Carousel.Item>
-              <img
-                class='d-block w-100'
-                //src={require('./images/host.jpg')}
-                alt='First slide'
-              />
+              <img 
+              className='d-block w-100'
+              src={require('../images/host.jpg')} alt='First slide' />
               <Carousel.Caption>
                 <h3>First slide label</h3>
                 <p>
@@ -75,34 +46,18 @@ class Home extends Component {
             <Carousel.Item>
               <img
                 className='d-block w-100'
-                src='holder.js/800x400?text=Second slide&bg=282c34'
+                src={require('../images/recipe2.jpg')}
                 alt='Third slide'
               />
-
               <Carousel.Caption>
                 <h3>Second slide label</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </Carousel.Caption>
             </Carousel.Item>
-            <Carousel.Item>
-              <img
-                className='d-block w-100'
-                src='holder.js/800x400?text=Third slide&bg=20232a'
-                alt='Third slide'
-              />
-
-              <Carousel.Caption>
-                <h3>Third slide label</h3>
-                <p>
-                  Praesent commodo cursus magna, vel scelerisque nisl
-                  consectetur.
-                </p>
-              </Carousel.Caption>
-            </Carousel.Item>
           </Carousel>
-        </Row>
-        <Row>{this.state.render}</Row>
-      </Container>
+          {this.state.render}
+        </div>
+      </div>
     )
   }
 }

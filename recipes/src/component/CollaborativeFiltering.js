@@ -1,7 +1,13 @@
 import React, { Component } from 'react'
 import '../App.css'
-
-import { Card, ButtonToolbar, Button, ListGroup ,Container} from 'react-bootstrap'
+import Navbar from './Navbar'
+import {
+  Card,
+  ButtonToolbar,
+  Button,
+  ListGroup,
+  Container
+} from 'react-bootstrap'
 let userArr = [
   'Jagrutee',
   'Sudarshana',
@@ -114,48 +120,18 @@ class Collaborative extends Component {
   }
 
   render () {
-    // if (this.state.recomRecipes.length > 0)
-    //   this.setState({ title: <p>Recommended Recipes for </p> })
     return (
-      <Container>
-        <p class='sectionTitle'>Users List</p>
-        <div id='user-list'>
-          <ButtonToolbar>
-            {userArr.map(key => (
-              <Button variant='info' onClick={() => this.getSimilarUser(key)}>
-                {key}
-              </Button>
-            ))}
-          </ButtonToolbar>
-        </div>
-        <div id='middle-container'>
-          <div class='similarTitle'>
-            <p>Most similar Users for {this.state.currentUser}</p>
-          </div>
-          <table>
-            <tr>
-              {this.state.similarUser.map(row => (
-                <th>
-                  {row.name} =>({row.similarity})
-                </th>
-              ))}
-            </tr>
-          </table>
-        </div>
-        <div id='recomm-recipes-list'>
-          <div class='recomTitle'>
-            <p>Recommended Recipes for {this.state.currentUser}</p>
-          </div>
-          {this.state.title}
-          <ListGroup>
-            {this.state.recomRecipes.map(i => (
-              <ListGroup.Item>{i}</ListGroup.Item>
-            ))}
-          </ListGroup>
-        </div>
+      <div>
+        <Navbar />
+        <p class='sectionTitle'>Recommended Recipes For You!</p>
 
-        <div></div>
-      </Container>
+        <div id='recomm-recipes-list'>
+          <div className='recomm-recipe-each'>Pavbhaji</div>
+          <div className='recomm-recipe-each'>Chole</div>
+          <div className='recomm-recipe-each'>Chole</div>
+          <div className='recomm-recipe-each'>Chole</div>
+        </div>
+      </div>
     )
   }
 }

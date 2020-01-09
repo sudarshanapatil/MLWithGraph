@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Collaborative from './component/CollaborativeFiltering'
-import Contentbased from './component/Contentbased'
+// import Collaborative from './component/CollaborativeFiltering'
+// import Contentbased from './component/Contentbased'
 import Login from './component/Login'
-import Home from './component/Home'
+// import Home from './component/Home'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import {
   Button,
@@ -16,22 +16,19 @@ import './App.css'
 class App extends Component {
   constructor () {
     super()
-    this.state = {
-      render: ''
-    }
   }
 
   render () {
     return (
       <Container>
-        <Router>
-          <Row>
+        {/* <Router> */}
+          {/* <Row>
             <div class='titlebar'>Recipe Recommendation System</div>
-          </Row>
-          <Link to='/'>Login</Link>
-          <Link to='/home'>Home</Link>
-        <Switch>
-          <Route path='/content'>
+          </Row> */}
+          {/* <Link to='/'>Login</Link> */}
+          {/* <Link to='/home'>Home</Link> */}
+        {/* <Switch> */}
+          {/* <Route path='/content'>
             <Contentbased />
           </Route>
           <Route path='/collaborative'>
@@ -39,15 +36,15 @@ class App extends Component {
           </Route>
           <Route path='/home'>
             <Home />
-          </Route>
-          <Route path='/login'>
+          </Route> */}
+          {/* <Route path='/login'>
             <Login />
-          </Route>
-          <Route path='/'>
+          </Route> */}
+          {/* <Route path='/'> */}
             <Login />
-          </Route>
+          {/* </Route>
         </Switch>
-        </Router>
+        </Router> */}
       </Container>
     )
   }
