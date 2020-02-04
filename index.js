@@ -1,13 +1,32 @@
 const express = require('express')
 const morgan = require('morgan')
-const neo4j = require('neo4j-driver').v1
+const bluebird = require('bluebird')
+const neo4j = require('neo4j-driver')
 var driver = neo4j.driver(
   'bolt://localhost:11002',
-  neo4j.auth.basic('neo4j', 'sudri@123'), {
-   // maxConnectionLifetime: 60 * 60 * 1000, // 1 hour
+  neo4j.auth.basic('neo4j', 'sudri@123'),
+  {
+    // maxConnectionLifetime: 60 * 60 * 1000, // 1 hour
     //maxConnectionPoolSize: 300,
   }
 )
+
+var mysql = require('mysql')
+
+var con = mysql.createConnection({
+  host: 'localhost',
+  user: 'fgadmin',
+  password: 'sudri@123',
+  database:'mtech_project'
+})
+
+const db = bluebird.promisifyAll(con)
+
+con.connect(function (err) {
+  if (err) throw err
+  console.log('Connected to mysql! ')
+})
+
 console.log('Connected to neo4j')
 const cors = require('cors')
 const session = driver.session()
@@ -17,6 +36,34 @@ app.use(cors())
 app.use(morgan('tiny'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.post('/login', (req, res) => {
+  let userName = req.body.userName
+  console.log('in login',req.body)
+  let query = 'SELECT * FROM user'
+  db.queryAsync(query)
+    .then(function (rows) {
+      console.log(rows)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  
+})
+app.post('/register', (req, res) => {
+  let userName = req.body.userName
+  let password=req.body.password
+  console.log('in login',req.body)
+  let query = `insert into user ("name","password") values (${userName},${password})`
+  db.queryAsync(query)
+    .then(function (rows) {
+      console.log(rows)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  
+})
 
 app.get('/getallingredients', (req, res) => {
   console.log('in getallingredients')
@@ -96,7 +143,7 @@ app.post('/getrecipes', (req, res) => {
         return 0
       })
       res.send(recipes)
-     //driver.close()
+      //driver.close()
     })
     resultPromise.catch(err => {
       console.log(err)
@@ -232,10 +279,7 @@ app.post('/getuserrating', (req, res) => {
       })
     })
   })
-
-
 })
-
 
 // Starting server
 const port = 1337
