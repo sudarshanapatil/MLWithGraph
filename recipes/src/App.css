@@ -13,7 +13,6 @@ a{
 }
 
 .home-carousal{
-
   width: 100vw;
   height: 100vh;
 }
@@ -28,7 +27,7 @@ a{
 }
 
 .add-recipe-ingredient{
-  background-color: burlywood;
+  background-color:teal;
   margin: 4px;
   padding: 5px;
   width:100px;
@@ -211,7 +210,7 @@ img {
 
 .login-section {
   background-color: cadetblue;
-  width: 400px;
+  width: 500px;
   padding: 40px;
 }
 

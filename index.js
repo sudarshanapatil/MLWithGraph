@@ -17,7 +17,7 @@ var con = mysql.createConnection({
   host: 'localhost',
   user: 'fgadmin',
   password: 'sudri@123',
-  database:'mtech_project'
+  database: 'mtech_project'
 })
 
 const db = bluebird.promisifyAll(con)
@@ -39,7 +39,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.post('/login', (req, res) => {
   let userName = req.body.userName
-  console.log('in login',req.body)
+  console.log('in login', req.body)
   let query = 'SELECT * FROM user'
   db.queryAsync(query)
     .then(function (rows) {
@@ -48,12 +48,11 @@ app.post('/login', (req, res) => {
     .catch(err => {
       console.log(err)
     })
-  
 })
 app.post('/register', (req, res) => {
   let userName = req.body.userName
-  let password=req.body.password
-  console.log('in login',req.body)
+  let password = req.body.password
+  console.log('in login', req.body)
   let query = `insert into user ("name","password") values (${userName},${password})`
   db.queryAsync(query)
     .then(function (rows) {
@@ -62,7 +61,28 @@ app.post('/register', (req, res) => {
     .catch(err => {
       console.log(err)
     })
-  
+})
+app.post('/raterecipes', (req, res) => {
+  let recipeId = req.body.recipeId
+  console.log('rateRecipes', recipeId)
+  let query = `MATCH (n { id: '98717' })
+  SET n.skillLevel = 'Most Difficult'
+  RETURN n`
+  const resultPromise = session.run(query)
+  resultPromise.then(result => {
+    //session.close()
+    let ingredients = result.records.map(i => {
+      console.log(i['_fields'][0], 'data')
+      return i['_fields'][0]
+    })
+    // ingredients = ingredients.sort()
+    res.send('ingredients')
+    // on application exit:
+    //driver.close()
+  })
+  resultPromise.catch(err => {
+    console.log(err)
+  })
 })
 
 app.get('/getallingredients', (req, res) => {
@@ -91,9 +111,12 @@ app.get('/getallrecipes', (req, res) => {
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()
-    console.log(result, 'data')
     let ingredients = result.records.map(i => {
-      return i['_fields'][0].properties.name
+      console.log(i['_fields'][0].properties, 'data')
+      return {
+        recipeName: i['_fields'][0].properties.name,
+        id: i['_fields'][0].properties.id
+      }
     })
     ingredients = ingredients.sort()
     res.send(ingredients)

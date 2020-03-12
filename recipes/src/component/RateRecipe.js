@@ -49,10 +49,19 @@ class RateRecipe extends Component {
           </Modal.Header>
           <Modal.Body>
           <Button variant='secondary' onClick={()=>this.handleClose()}>
-              *
+              1
             </Button>
             <Button variant='secondary' onClick={()=>this.handleClose()}>
-              * *
+              2
+            </Button>
+            <Button variant='secondary' onClick={()=>this.handleClose()}>
+              3
+            </Button>
+            <Button variant='secondary' onClick={()=>this.handleClose()}>
+              4
+            </Button>
+            <Button variant='secondary' onClick={()=>this.handleClose()}>
+              5
             </Button>
           </Modal.Body>
           <Modal.Footer>
