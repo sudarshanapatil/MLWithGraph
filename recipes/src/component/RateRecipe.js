@@ -7,23 +7,57 @@ class RateRecipe extends Component {
     this.state = {
       recipes: [],
       setShow: false,
-      show: false
+      show: false,
+      recipeId: '',
+      rating: ''
     }
   }
 
+  saveRating = (recipeId, rating) => {
+    console.log('in save rating ', recipeId)
+    fetch('http://localhost:1337/raterecipes', {
+      method: 'POST', // or 'PUT'
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ recipeId, rating })
+    })
+      .then(res => res.json())
+      .then(recipes => {
+        this.handleClose()
+      })
+      .catch(err => {
+        console.log(err)
+        this.setState({
+          recipes: []
+        })
+      })
+  }
+
   handleClose = () => {
+    console.log('in close')
     this.setState({ show: false })
   }
-  handleShow = () => {
-    this.setState({ show: true })
+
+  handleShow = recipeId => {
+    this.setState({ show: true, recipeId })
   }
-  showModal = () => {
-    console.log("in modal")
-    this.handleShow()}
+
+  showModal = recipeId => {
+    console.log('in modal', recipeId)
+    this.handleShow(recipeId)
+  }
+  
   componentDidMount () {
     fetch('http://localhost:1337/getallrecipes')
       .then(res => res.json())
-      .then(recipes => this.setState({ recipes }))
+      .then(recipes => {
+        let recipesData = recipes.map(key => {
+          return key.recipeName
+        })
+        console.log(recipes, 'API data')
+        this.setState({ recipes })
+      })
       .catch(err => {
         console.log(err)
         this.setState({
@@ -37,41 +71,60 @@ class RateRecipe extends Component {
       <div className='add-recipe-container'>
         {this.state.recipes.map(recipe => (
           <Button
-            className='add-recipe-ingredient'
-            onClick={() => this.showModal()}
+            className='recipeRate'
+            onClick={() => this.showModal(recipe.id)}
           >
-            {recipe}
+            {recipe.recipeName}
           </Button>
         ))}
-        <Modal show={this.state.show} onHide={()=>this.handleClose()} animation={false}>
+        <Modal
+          show={this.state.show}
+          onHide={() => this.handleClose()}
+          animation={false}
+        >
           <Modal.Header closeButton>
             <Modal.Title>Rate Recipe:</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <Button variant='secondary' onClick={()=>this.handleClose()}>
+            <Button
+              variant='secondary'
+              onClick={() => this.saveRating(this.state.recipeId, 1)}
+            >
               1
             </Button>
-            <Button variant='secondary' onClick={()=>this.handleClose()}>
+            <Button
+              variant='secondary'
+              onClick={() => this.saveRating(this.state.recipeId, 2)}
+            >
               2
             </Button>
-            <Button variant='secondary' onClick={()=>this.handleClose()}>
+            <Button
+              variant='secondary'
+              onClick={() => this.saveRating(this.state.recipeId, 3)}
+            >
               3
             </Button>
-            <Button variant='secondary' onClick={()=>this.handleClose()}>
+            <Button
+              variant='secondary'
+              onClick={() => this.saveRating(this.state.recipeId, 4)}
+            >
               4
             </Button>
-            <Button variant='secondary' onClick={()=>this.handleClose()}>
+            <Button
+              variant='secondary'
+              onClick={() => this.saveRating(this.state.recipeId, 5)}
+            >
               5
             </Button>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant='secondary' onClick={()=>this.handleClose()}>
+          {/* <Modal.Footer>
+            <Button variant='secondary' onClick={() => this.handleClose()}>
               Close
             </Button>
-            <Button variant='primary' onClick={()=>this.handleClose()}>
+            <Button variant='primary' onClick={() => this.saveRating(this.state.recipeId)}>
               Save Changes
             </Button>
-          </Modal.Footer>
+          </Modal.Footer> */}
         </Modal>
       </div>
     )

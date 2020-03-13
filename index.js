@@ -63,12 +63,21 @@ app.post('/register', (req, res) => {
     })
 })
 app.post('/raterecipes', (req, res) => {
+  //TODO:jwttoken implemetion need to be added
   let recipeId = req.body.recipeId
+  let rating=req.body.rating
+  let userName='Sudarshana'
   console.log('rateRecipes', recipeId)
-  let query = `MATCH (n { id: '98717' })
+  let query2=`MATCH (a:Person),(b:Recipe)
+  WHERE a.name = '${userName}' AND b.id = '${recipeId}'
+  Merge (a)-[r:Rated { rating:${rating} }]->(b)
+  RETURN type(r), r.name` 
+
+
+  let query = `MATCH (n { id: '${recipeId}' })
   SET n.skillLevel = 'Most Difficult'
   RETURN n`
-  const resultPromise = session.run(query)
+  const resultPromise = session.run(query2)
   resultPromise.then(result => {
     //session.close()
     let ingredients = result.records.map(i => {
@@ -76,7 +85,7 @@ app.post('/raterecipes', (req, res) => {
       return i['_fields'][0]
     })
     // ingredients = ingredients.sort()
-    res.send('ingredients')
+    res.send({code:200,message:'Successfully saved'})
     // on application exit:
     //driver.close()
   })

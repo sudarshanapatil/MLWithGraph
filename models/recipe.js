@@ -10,7 +10,8 @@ router.post('/data', function (req, res) {
 });
 
 router.post('/login', function (req, res) {
-  var token = jwt.sign({ foo: 'bar' }, 'shhhhh');
+  let email=req.body.email
+  var token = jwt.sign({ email }, 'secrete');
   let query = 'SELECT * FROM user'
   db.queryAsync(query)
     .then(function (rows) {
