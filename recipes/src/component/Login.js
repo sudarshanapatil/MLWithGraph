@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import '../App.css'
+import '../styles/Login.css'
 import { Button, Form } from 'react-bootstrap'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 class Login extends Component {
@@ -32,7 +33,7 @@ class Login extends Component {
               <Link to='/home'>Login</Link>
             </Button>
 
-            <Button variant='warning' type='submit'>
+            <Button variant='info' type='submit'>
               <Link to='/register'>Register</Link>
             </Button>
           </Form>

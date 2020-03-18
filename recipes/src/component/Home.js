@@ -1,7 +1,16 @@
 import React, { Component } from 'react'
-import { Button, ButtonToolbar, Carousel } from 'react-bootstrap'
+import {
+  Button,
+  ButtonToolbar,
+  Carousel,
+  Container,
+  Row,
+  Col
+} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import '../App.css'
+import '../styles/Home.css'
+import Navbar from './Navbar'
 class Home extends Component {
   constructor () {
     super()
@@ -13,32 +22,32 @@ class Home extends Component {
   render () {
     console.log(this.state.render)
     return (
-      <div>
-        <div class='titlebar'>Recipe Recommendation System</div>
-        <div className='home-buttons'>
-          {/* <ButtonToolbar> */}
-          <div className='home-button-each'>
+      <Container fluid>
+        <Row className='titlebar'>Recipe Recommendation System</Row>
+        <Row>
+          <Col className='home-button-each'>
             <Link to='/content'>Find Recipes Based On Ingredients</Link>
-          </div>
-          <div className='home-button-each'>
+          </Col>
+          <Col className='home-button-each'>
             <Link to='/collaboration'>
               Recommended Recipes For You From Us!!
             </Link>
-          </div>
-          <div className='home-button-each'>
+          </Col>
+          <Col className='home-button-each'>
             <Link to='/addRecipe'>Add Recipe</Link>
-          </div>
-          <div className='home-button-each'>
+          </Col>
+          <Col className='home-button-each'>
             <Link to='/rateRecipe'>Rate Racipe</Link>
-          </div>
-          {/* </ButtonToolbar> */}
-        </div>
-        <div className='home-carousal'>
+          </Col>
+        </Row>
+        <Row className='home-caroulsel'>
           <Carousel>
             <Carousel.Item>
-              <img 
-              className="img-carousel"
-              src={require('../images/host.jpg')} alt='First slide' />
+              <img
+                className='img-carousel'
+                src={require('../images/login.jpg')}
+                alt='First slide'
+              />
               <Carousel.Caption>
                 <h3>First slide label</h3>
                 <p>
@@ -48,8 +57,8 @@ class Home extends Component {
             </Carousel.Item>
             <Carousel.Item>
               <img
-                className="img-carousel"
-                src={require('../images/recipe2.jpg')}
+                className='img-carousel'
+                src={require('../images/login.jpg')}
                 alt='Third slide'
               />
               <Carousel.Caption>
@@ -59,8 +68,8 @@ class Home extends Component {
             </Carousel.Item>
           </Carousel>
           {this.state.render}
-        </div>
-      </div>
+        </Row>
+      </Container>
     )
   }
 }
