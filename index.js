@@ -65,14 +65,13 @@ app.post('/register', (req, res) => {
 app.post('/raterecipes', (req, res) => {
   //TODO:jwttoken implemetion need to be added
   let recipeId = req.body.recipeId
-  let rating=req.body.rating
-  let userName='Sudarshana'
+  let rating = req.body.rating
+  let userName = 'Sudarshana'
   console.log('rateRecipes', recipeId)
-  let query2=`MATCH (a:Person),(b:Recipe)
+  let query2 = `MATCH (a:Person),(b:Recipe)
   WHERE a.name = '${userName}' AND b.id = '${recipeId}'
   Merge (a)-[r:Rated { rating:${rating} }]->(b)
-  RETURN type(r), r.name` 
-
+  RETURN type(r), r.name`
 
   let query = `MATCH (n { id: '${recipeId}' })
   SET n.skillLevel = 'Most Difficult'
@@ -85,7 +84,7 @@ app.post('/raterecipes', (req, res) => {
       return i['_fields'][0]
     })
     // ingredients = ingredients.sort()
-    res.send({code:200,message:'Successfully saved'})
+    res.send({ code: 200, message: 'Successfully saved' })
     // on application exit:
     //driver.close()
   })
@@ -186,6 +185,28 @@ app.post('/getrecipes', (req, res) => {
     res.send(err)
   }
 })
+
+app.get('/getrecipelevel', (req, res) => {
+  let query = `MATCH (n:Recipe{ skillLevel: 'Easy' }) RETURN n limit 10`
+  const resultPromise = session.run(query)
+  resultPromise.then(result => {
+    //session.close()
+
+    let finalData=result.records.map(data => {
+      return {
+        name: data['_fields'][0].properties.name,
+        desc: data['_fields'][0].properties.description
+      }
+    })
+    res.send(finalData)
+    // on application exit:
+    driver.close()
+  })
+  resultPromise.catch(err => {
+    console.log(err)
+  })
+})
+
 app.get('/getall', (req, res) => {
   console.log('in getall')
   const nodeName = `Recipe`

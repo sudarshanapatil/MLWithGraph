@@ -58,7 +58,7 @@ class Home extends Component {
             <Carousel.Item>
               <img
                 className='img-carousel'
-                src={require('../images/login.jpg')}
+                src={require('../images/indianchat.jpg')}
                 alt='Third slide'
               />
               <Carousel.Caption>
