@@ -1,22 +1,29 @@
-#ingredient-container {
-  position: fixed;
-  left: 0;
-  overflow-y: scroll;
-  height: 100%;
-  min-width: 20%;
-  border: 1px solid black;
+body {
+  width: 100vw;
+  height: 100vh;
+  /* background-image: url("./images/login.jpg"); */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+  background-color: rgb(241, 227, 214);
 }
 
-#ingredient-container::-webkit-scrollbar {
-  display: none;
+a{
+  color:white;
 }
-.titlebar {
-  background-color: teal;
-  height: 60px;
-  text-align: center;
-  font-size: 25px;
-  color: white;
-  text-decoration-color: thistle;
+
+.add-recipe-ingredient{
+  background-color:teal;
+  margin: 4px;
+  padding: 5px;
+  width:100px;
+  border-radius:4px;
+  align-content: center;  
+}
+
+img {
+  opacity: 0.9;
+  filter: alpha(opacity=50); /* For IE8 and earlier */
 }
 
 #navbar {
@@ -39,71 +46,53 @@
   background-color: pink;
 }
 
-.recomTitle{
-background-color: aqua
+.recomTitle {
+  background-color: aqua;
 }
-.similarTitle{
-  background-color: aqua
-}
-
-#recomm-recipes-list {
-  height: 100%;
-  min-width: 40%;
-}
-
-.sectionTitle {
-  background-color: rgb(243, 243, 162);
-  height: 30px;
-  font-size: large;
-  font-style: normal;
-  text-align: justify;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
-    'Lucida Sans', Arial, sans-serif;
+.similarTitle {
+  background-color: aqua;
 }
 
 #each-user {
   text-align: justify;
 }
 
-#each-recipe {
-  background-color: indianred;
-  height: 40px;
+.register-section {
+  display: flex;
+  background-color: teal;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  padding: 40px;
+  margin: 70px;
 }
 
-.ingredient {
-  border-bottom: 1px solid #dedede;
-  padding: 5px;
+
+
+.home-buttons {
+  align-items: center;
+  padding: 20px;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
 }
 
-#selected-list,
-#ingredients-list {
-  border: 1px solid black;
-}
-
-.floating-button {
-  float: right;
-  font-size: 30px;
-  line-height: 20px;
-  cursor: pointer;
-}
-
-#selected-list > .selected {
-  background-color: #66bb6a;
-  font-weight: 600;
-}
-
-#recipe-container {
-  margin-left: 150px;
-  padding-top: 10px;
-}
-
-.recipe {
-  border: 1px solid black;
-  border-radius: 5px;
-  margin: 0px auto 20px;
-  padding: 5px;
-}
-
-#ingredient-heading {
+.navbar-title {
+  background-color: darkcyan;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
   text-align: center;
+  font-size: 25px;
+}
+
+
+
+.btn-secondary{
+
+
+  background-color: teal;
+  /* padding: 1%; */
+  margin:2%
 }

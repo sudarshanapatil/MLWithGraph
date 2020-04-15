@@ -1,0 +1,20 @@
+.login-body {
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  background-image:url("../images/login.jpg");
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-section {
+  background-color:teal;
+  width: 500px;
+  padding: 40px;
+  color:white;
+  font-size: 20px;
+}

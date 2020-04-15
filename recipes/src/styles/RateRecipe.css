@@ -1,0 +1,39 @@
+.rateRecipeTitle{
+  background-color:teal;
+  height: 60px;
+  color:white;
+  font-size: 25px;
+  font-style: normal;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+    'Lucida Sans', Arial, sans-serif;
+}
+
+.rateRecipeContainer{
+  background-image: url("../images/food.jpg");
+  flex-direction: column;
+}
+
+.rateButton{
+  background-color: teal;
+}
+
+.recipeRate{
+  background-color: teal;
+  /* flex-direction: column; */
+  color:white;
+  margin:20px;
+  width:200px;
+  height:100px
+}
+
+.add-recipe-container{
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+}

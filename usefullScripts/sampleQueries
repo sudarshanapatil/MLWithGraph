@@ -47,7 +47,7 @@ CREATE (a)-[r:Rated { rating:5 }]->(b)
 RETURN type(r), r.name
 
 //Assign Similarity
-MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Recipe]-(p2:Person)
+MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Rated]-(p2:Person)
 WITH  SUM(x.rating * y.rating) AS xyDotProduct,
       SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
       SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,

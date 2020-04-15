@@ -1,13 +1,35 @@
 const express = require('express')
 const morgan = require('morgan')
+const bluebird = require('bluebird')
 const neo4j = require('neo4j-driver')
 var driver = neo4j.driver(
   'bolt://localhost:11002',
-  neo4j.auth.basic('neo4j', 'sudri@123'), {
-   // maxConnectionLifetime: 60 * 60 * 1000, // 1 hour
+  neo4j.auth.basic('neo4j', 'sudri@123'),
+  {
+    //Cloud DB
+    //url:bolt://hobby-mnebmdhpafecgbkeffhkbnel.dbs.graphenedb.com:24787
+    //password:b.07RUt0fH9MFy.7t8a3ZTSyt16rq9y
+    //user:admin
+    // maxConnectionLifetime: 60 * 60 * 1000, // 1 hour
     //maxConnectionPoolSize: 300,
   }
 )
+
+var mysql = require('mysql')
+
+var con = mysql.createConnection({
+  host: 'localhost',  user: 'fgadmin',
+  password: 'sudri@123',
+  database: 'mtech_project'
+})
+
+const db = bluebird.promisifyAll(con)
+
+con.connect(function (err) {
+  if (err) throw err
+  console.log('Connected to mysql! ')
+})
+
 console.log('Connected to neo4j')
 const cors = require('cors')
 const session = driver.session()
@@ -18,6 +40,71 @@ app.use(morgan('tiny'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.post('/login', (req, res) => {
+  let {name,password} = req.body
+  console.log('in login', req.body)
+  let query = `SELECT password FROM user where name='${name}'`
+  db.queryAsync(query)
+    .then(function (data) {
+      if(data[0].password===password)
+      {
+        res.send({code:200,msg:`Login successful!`})
+      }
+      else{
+        res.send({code:400,msg:`Unauthorized User`})
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+})
+app.post('/register', (req, res) => {
+  let userName = req.body.name
+  let password = req.body.password
+  console.log('in register', req.body)
+  let query = `insert into user (name,password) values ('${userName}',"${password}")`
+  db.queryAsync(query)
+    .then(function (rows) {
+      console.log(rows)
+      res.send({code:200,msg:"successfully inserted!"})
+    })
+    .catch(err => {
+      console.log(err)
+    })
+})
+app.post('/raterecipes', (req, res) => {
+  //TODO:jwttoken implemetion need to be added
+  
+  let recipeId = req.body.recipeId
+  let rating = req.body.rating
+  let userName = 'Chandler'
+  console.log(recipeId,"recipeId",rating,userName)
+  console.log('rateRecipes', recipeId)
+  let query2 = `MATCH (a:Person),(b:Recipe)
+  WHERE a.name = '${userName}' AND b.id = '${recipeId}'
+  Merge (a)-[r:Rated { rating:${rating} }]->(b)
+  RETURN type(r), r.name`
+
+  let query = `MATCH (n { id: '${recipeId}' })
+  SET n.skillLevel = 'Most Difficult'
+  RETURN n`
+  const resultPromise = session.run(query2)
+  resultPromise.then(result => {
+    //session.close()
+    let ingredients = result.records.map(i => {
+      console.log(i['_fields'][0], 'data')
+      return i['_fields'][0]
+    })
+    // ingredients = ingredients.sort()
+    res.send({ code: 200, message: 'Successfully saved' })
+    // on application exit:
+    //driver.close()
+  })
+  resultPromise.catch(err => {
+    console.log(err)
+  })
+})
+
 app.get('/getallingredients', (req, res) => {
   console.log('in getallingredients')
   let query = `MATCH (n:Ingredient) RETURN n limit 50`
@@ -27,6 +114,29 @@ app.get('/getallingredients', (req, res) => {
     console.log(result, 'data')
     let ingredients = result.records.map(i => {
       return i['_fields'][0].properties.name
+    })
+    ingredients = ingredients.sort()
+    res.send(ingredients)
+    // on application exit:
+    //driver.close()
+  })
+  resultPromise.catch(err => {
+    console.log(err)
+  })
+})
+
+app.get('/getallrecipes', (req, res) => {
+  console.log('in getallrecipes')
+  let query = `MATCH (n:Recipe) RETURN n limit 50`
+  const resultPromise = session.run(query)
+  resultPromise.then(result => {
+    //session.close()
+    let ingredients = result.records.map(i => {
+      console.log(i['_fields'][0].properties, 'data')
+      return {
+        recipeName: i['_fields'][0].properties.name,
+        id: i['_fields'][0].properties.id
+      }
     })
     ingredients = ingredients.sort()
     res.send(ingredients)
@@ -75,8 +185,9 @@ app.post('/getrecipes', (req, res) => {
         if (keyA > keyB) return 1
         return 0
       })
+      // console.log(recipes.length,"array length")
       res.send(recipes)
-     //driver.close()
+      //driver.close()
     })
     resultPromise.catch(err => {
       console.log(err)
@@ -87,6 +198,28 @@ app.post('/getrecipes', (req, res) => {
     res.send(err)
   }
 })
+
+app.get('/getrecipelevel', (req, res) => {
+  let query = `MATCH (n:Recipe{ skillLevel: 'Easy' }) RETURN n limit 10`
+  const resultPromise = session.run(query)
+  resultPromise.then(result => {
+    //session.close()
+
+    let finalData=result.records.map(data => {
+      return {
+        name: data['_fields'][0].properties.name,
+        desc: data['_fields'][0].properties.description
+      }
+    })
+    res.send(finalData)
+    // on application exit:
+    driver.close()
+  })
+  resultPromise.catch(err => {
+    console.log(err)
+  })
+})
+
 app.get('/getall', (req, res) => {
   console.log('in getall')
   const nodeName = `Recipe`
@@ -212,10 +345,7 @@ app.post('/getuserrating', (req, res) => {
       })
     })
   })
-
-
 })
-
 
 // Starting server
 const port = 1337

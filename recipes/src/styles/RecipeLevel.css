@@ -1,0 +1,17 @@
+.recipeLevelTitle{
+  background-color:teal;
+  height: 60px;
+  color:white;
+  font-size: 25px;
+  font-style: normal;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+    'Lucida Sans', Arial, sans-serif;
+}
+
+.recipeLevelContainer{
+  background-image: url("../images/food.jpg");
+  flex-direction: column;
+}
