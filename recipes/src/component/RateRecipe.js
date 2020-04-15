@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import '../App.css'
-import { Modal, Button } from 'react-bootstrap'
+import { Modal, Button ,Container,Row} from 'react-bootstrap'
+import '../styles/RateRecipe.css'
 class RateRecipe extends Component {
   constructor () {
     super()
@@ -68,7 +69,11 @@ class RateRecipe extends Component {
 
   render () {
     return (
-      <div className='add-recipe-container'>
+      <Container className='rateRecipeContainer' fluid>
+        <Row className='rateRecipeTitle'>
+             Rate Following Recipes And Earn POINTS!!
+        </Row>
+      <Row className='add-recipe-container'>
         {this.state.recipes.map(recipe => (
           <Button
             className='recipeRate'
@@ -126,7 +131,8 @@ class RateRecipe extends Component {
             </Button>
           </Modal.Footer> */}
         </Modal>
-      </div>
+      </Row>
+      </Container>
     )
   }
 }

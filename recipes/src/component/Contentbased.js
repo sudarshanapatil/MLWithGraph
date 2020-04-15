@@ -17,7 +17,8 @@ class Contentbased extends Component {
     this.state = {
       ingredients: [],
       recipes: [],
-      selected: []
+      selected: [],
+      recipesData:'People who love to eat are always the best people!!'
     }
   }
 
@@ -38,7 +39,12 @@ class Contentbased extends Component {
         })
       })
         .then(res => res.json())
-        .then(recipes => this.setState({ recipes }))
+        .then(recipes => {
+          if(recipes.length===0)
+          {
+            this.setState({ recipesData:'Sorry, No recipes available for your selected ingredients' })
+          }
+          this.setState({ recipes })})
         .catch(err => {
           console.log(err)
           this.setState({
@@ -131,7 +137,7 @@ class Contentbased extends Component {
               ingredients:
             </Row>
             {/* <Row className='recipe-container'> */}
-              {this.state.recipes.map(recipe => (
+              {(this.state.recipes.length!=0)&&this.state.recipes.map(recipe => (
                 <Row className='recipe'>
                   <h3>{recipe.recipe}</h3>
                   <Row className='recipe-detail'>
@@ -140,6 +146,7 @@ class Contentbased extends Component {
                   {/* <button class="btn btn-primary">How to Make</button> */}
                 </Row>
               ))}
+              {(this.state.recipes.length===0)&&<p className='noDataStyle'>{this.state.recipesData}</p>}
             {/* </Row> */}
           </Col>
         </Row>

@@ -6,6 +6,9 @@
   text-align: center;
   font-size:25px;
   padding: 5px;
+  margin-bottom: 5px;
+  justify-content: center;
+  border-radius: 4px;
 }
 
 .recipe-container {
@@ -20,6 +23,7 @@
   color: white;
   height:60px;
   padding: 5px;
+  border-radius: 4px;
 
 }
 #each-recipe {
@@ -90,4 +94,13 @@
 
 .ingredient-container::-webkit-scrollbar {
   display: none;
+}
+
+.noDataStyle{
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 40px;
+  background-color: white;
+  
 }

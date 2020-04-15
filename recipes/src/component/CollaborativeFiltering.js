@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import '../App.css'
-import Navbar from './Navbar'
-
+import '../styles/Collaborative.css'
+import { Container,Row } from 'react-bootstrap'
 const baseUrl = 'http://localhost:1337/'
-
 class Collaborative extends Component {
   constructor () {
     super()
@@ -17,7 +16,7 @@ class Collaborative extends Component {
     }
   }
 
-  componentDidMount(){
+  componentDidMount () {
     fetch('http://localhost:1337/getuserrecommendation', {
       method: 'post',
       headers: {
@@ -25,7 +24,7 @@ class Collaborative extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        userName:'Spruha'
+        userName: 'Spruha'
       })
     })
       .then(res => res.json())
@@ -113,7 +112,7 @@ class Collaborative extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        userName:'Spruha'
+        userName: 'Spruha'
       })
     })
       .then(res => res.json())
@@ -131,19 +130,14 @@ class Collaborative extends Component {
 
   render () {
     return (
-      <div>
-        <Navbar />
-        <p class='sectionTitle'>Recommended Recipes For You!</p>
-
-        <div id='recomm-recipes-list'>
-          {
-            this.state.recomRecipes.map((recipe)=>{
-              return (<div className='recomm-recipe-each'>{recipe}</div>)
-            })
-          }
-          
-        </div>
-      </div>
+      <Container className='collaborativeContainer' fluid>
+        <Row className='sectionTitle'>Recommended Recipes For You Based On Your Simillar Users!</Row>
+        <Row id='recomm-recipes-list'>
+          {this.state.recomRecipes.map(recipe => {
+            return <div className='recomm-recipe-each'>{recipe}</div>
+          })}
+        </Row>
+      </Container>
     )
   }
 }

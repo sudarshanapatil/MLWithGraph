@@ -6,6 +6,10 @@ var driver = neo4j.driver(
   'bolt://localhost:11002',
   neo4j.auth.basic('neo4j', 'sudri@123'),
   {
+    //Cloud DB
+    //url:bolt://hobby-mnebmdhpafecgbkeffhkbnel.dbs.graphenedb.com:24787
+    //password:b.07RUt0fH9MFy.7t8a3ZTSyt16rq9y
+    //user:admin
     // maxConnectionLifetime: 60 * 60 * 1000, // 1 hour
     //maxConnectionPoolSize: 300,
   }
@@ -14,8 +18,7 @@ var driver = neo4j.driver(
 var mysql = require('mysql')
 
 var con = mysql.createConnection({
-  host: 'localhost',
-  user: 'fgadmin',
+  host: 'localhost',  user: 'fgadmin',
   password: 'sudri@123',
   database: 'mtech_project'
 })
@@ -38,25 +41,32 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.post('/login', (req, res) => {
-  let userName = req.body.userName
+  let {name,password} = req.body
   console.log('in login', req.body)
-  let query = 'SELECT * FROM user'
+  let query = `SELECT password FROM user where name='${name}'`
   db.queryAsync(query)
-    .then(function (rows) {
-      console.log(rows)
+    .then(function (data) {
+      if(data[0].password===password)
+      {
+        res.send({code:200,msg:`Login successful!`})
+      }
+      else{
+        res.send({code:400,msg:`Unauthorized User`})
+      }
     })
     .catch(err => {
       console.log(err)
     })
 })
 app.post('/register', (req, res) => {
-  let userName = req.body.userName
+  let userName = req.body.name
   let password = req.body.password
-  console.log('in login', req.body)
-  let query = `insert into user ("name","password") values (${userName},${password})`
+  console.log('in register', req.body)
+  let query = `insert into user (name,password) values ('${userName}',"${password}")`
   db.queryAsync(query)
     .then(function (rows) {
       console.log(rows)
+      res.send({code:200,msg:"successfully inserted!"})
     })
     .catch(err => {
       console.log(err)
@@ -64,9 +74,11 @@ app.post('/register', (req, res) => {
 })
 app.post('/raterecipes', (req, res) => {
   //TODO:jwttoken implemetion need to be added
+  
   let recipeId = req.body.recipeId
   let rating = req.body.rating
-  let userName = 'Sudarshana'
+  let userName = 'Chandler'
+  console.log(recipeId,"recipeId",rating,userName)
   console.log('rateRecipes', recipeId)
   let query2 = `MATCH (a:Person),(b:Recipe)
   WHERE a.name = '${userName}' AND b.id = '${recipeId}'
@@ -173,6 +185,7 @@ app.post('/getrecipes', (req, res) => {
         if (keyA > keyB) return 1
         return 0
       })
+      // console.log(recipes.length,"array length")
       res.send(recipes)
       //driver.close()
     })

@@ -12,6 +12,7 @@ import ContentBased from './component/Contentbased'
 import Collaborative from './component/CollaborativeFiltering'
 import AddRecipe from './component/AddRecipe'
 import RateRecipe from './component/RateRecipe'
+import RecipeLevel from './component/RecipesWithSkill'
 
 
 const routing = (
@@ -24,6 +25,7 @@ const routing = (
       <Route exact path="/collaboration" component={Collaborative} />
       <Route exact path="/addRecipe" component={AddRecipe} />
       <Route exact path="/rateRecipe" component={RateRecipe} />
+      <Route exact path="/recipelevel" component={RecipeLevel} />
     </Switch>
   </Router>
 )

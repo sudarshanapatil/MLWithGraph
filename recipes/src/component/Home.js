@@ -22,7 +22,9 @@ class Home extends Component {
   render () {
     console.log(this.state.render)
     return (
-      <Container fluid>
+      // <div className='backgroundImage'></div>
+      <Container className='homeContainer' fluid>
+        
         <Row className='titlebar'>Recipe Recommendation System</Row>
         <Row>
           <Col className='home-button-each'>
@@ -34,7 +36,7 @@ class Home extends Component {
             </Link>
           </Col>
           <Col className='home-button-each'>
-            <Link to='/addRecipe'>Add Recipe</Link>
+            <Link to='/recipelevel'>Recipes with different Skills</Link>
           </Col>
           <Col className='home-button-each'>
             <Link to='/rateRecipe'>Rate Racipe</Link>
@@ -45,13 +47,26 @@ class Home extends Component {
             <Carousel.Item>
               <img
                 className='img-carousel'
-                src={require('../images/login.jpg')}
+                src={require('../images/carousel3.jpg')}
                 alt='First slide'
               />
               <Carousel.Caption>
-                <h3>First slide label</h3>
+                <h3>John Gunther</h3>
                 <p>
-                  Nulla vitae elit libero, a pharetra augue mollis interdum.
+                All happiness depends on a leisurely breakfast
+                </p>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className='img-carousel'
+                src={require('../images/carousel2.jpg')}
+                alt='First slide'
+              />
+              <Carousel.Caption>
+                <h3>Paul Prudhomme</h3>
+                <p>
+                You don't need a silver fork to eat good food.
                 </p>
               </Carousel.Caption>
             </Carousel.Item>
@@ -62,8 +77,8 @@ class Home extends Component {
                 alt='Third slide'
               />
               <Carousel.Caption>
-                <h3>Second slide label</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <h3>Barbara Johnson</h3>
+                <p>A balanced diet is a cookie in each hand.</p>
               </Carousel.Caption>
             </Carousel.Item>
           </Carousel>
