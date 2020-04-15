@@ -1,0 +1,2 @@
+//create user:
+merge (Jagrutee:Person {name: 'Jagrutee'}) RETURN Jagrutee

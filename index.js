@@ -18,8 +18,8 @@ var driver = neo4j.driver(
 var mysql = require('mysql')
 
 var con = mysql.createConnection({
-  host: 'localhost',  user: 'fgadmin',
-  password: 'sudri@123',
+  host: 'localhost',  user: 'root',
+  password: 'Sudri@123',
   database: 'mtech_project'
 })
 
@@ -77,7 +77,7 @@ app.post('/raterecipes', (req, res) => {
   
   let recipeId = req.body.recipeId
   let rating = req.body.rating
-  let userName = 'Chandler'
+  let userName = 'Sudarshana'
   console.log(recipeId,"recipeId",rating,userName)
   console.log('rateRecipes', recipeId)
   let query2 = `MATCH (a:Person),(b:Recipe)
@@ -95,7 +95,17 @@ app.post('/raterecipes', (req, res) => {
       console.log(i['_fields'][0], 'data')
       return i['_fields'][0]
     })
+    let assignNewSimilarity=`MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Rated]-(p2:Person)
+    WITH  SUM(x.rating * y.rating) AS xyDotProduct,
+          SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
+          SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,
+          p1, p2
+    MERGE (p1)-[s:SIMILARITY]-(p2)
+    SET   s.similarity = xyDotProduct / (xLength * yLength)`
     // ingredients = ingredients.sort()
+    // const newSimilarityRes = session.run(assignNewSimilarity)
+    // newSimilarityRes.then(result => {})
+    // newSimilarityRes.catch(err => {})
     res.send({ code: 200, message: 'Successfully saved' })
     // on application exit:
     //driver.close()
@@ -127,7 +137,7 @@ app.get('/getallingredients', (req, res) => {
 
 app.get('/getallrecipes', (req, res) => {
   console.log('in getallrecipes')
-  let query = `MATCH (n:Recipe) RETURN n limit 50`
+  let query = `MATCH (n:Recipe) RETURN n limit 5 `
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()

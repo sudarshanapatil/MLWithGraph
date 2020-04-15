@@ -11,6 +11,10 @@ WHERE    NOT((a)-[:Rated]->(m))
 RETURN m,r,b
 
 
+//Update relationship properties
+MATCH (a:Person)-[r]-(b:Recipe)
+ WHERE a.name = 'Sudarshana' AND b.id = '95358'
+ set r.rating=8
 
 
 
@@ -55,7 +59,9 @@ WITH  SUM(x.rating * y.rating) AS xyDotProduct,
 MERGE (p1)-[s:SIMILARITY]-(p2)
 SET   s.similarity = xyDotProduct / (xLength * yLength)
 
-
+//To get a person has rated which recipes:
+MATCH (:Person {name: 'Pradnya'})-[r:Rated]-(b) RETURN r,b
+//
 MATCH (:Recipe {name: 'Citrus peach cooler'})-[r:Rated]-(b) RETURN r,b
 
 //To delete a relationship
