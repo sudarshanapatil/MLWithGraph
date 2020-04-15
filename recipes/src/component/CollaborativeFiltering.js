@@ -4,9 +4,8 @@ import '../App.css'
 import { Card, ButtonToolbar, Button, ListGroup } from 'react-bootstrap'
 let userArr = [
   'Jagrutee',
-  'Sudarshana',
-  'Shweta',
   'Vishakha',
+  'Shweta',
   'Prajakta',
   'Pradnya'
 ]

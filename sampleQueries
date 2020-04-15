@@ -1,3 +1,20 @@
+/////////////////FOR PHASE1//////////////////////////////////////////////////////////////////////
+
+match  (p1:Person {name:'Jagrutee'})-[r1:Rated]->(m:Recipe)<-[r2:Rated]-(p2:Person {name:'Vishakha'})
+  RETURN m.name AS Recipe, r1.rating AS JagruteeRating, r2.rating AS VishakhaRating
+
+NOT RATED
+
+MATCH    (b:Person)-[r:Rated]->(m:Recipe),
+(a:Person {name:'Jagrutee'})
+WHERE    NOT((a)-[:Rated]->(m))
+RETURN m,r,b
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 //get db schema
 CALL db.schema()
 
