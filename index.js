@@ -2,18 +2,27 @@ const express = require('express')
 const morgan = require('morgan')
 const bluebird = require('bluebird')
 const neo4j = require('neo4j-driver')
-var driver = neo4j.driver(
-  'bolt://localhost:11002',
-  neo4j.auth.basic('neo4j', 'sudri@123'),
-  {
-    //Cloud DB
-    //url:bolt://hobby-mnebmdhpafecgbkeffhkbnel.dbs.graphenedb.com:24787
-    //password:b.07RUt0fH9MFy.7t8a3ZTSyt16rq9y
-    //user:admin
-    // maxConnectionLifetime: 60 * 60 * 1000, // 1 hour
-    //maxConnectionPoolSize: 300,
-  }
-)
+
+try {
+  var driver = neo4j.driver(
+    'bolt://localhost:11002',
+    neo4j.auth.basic('neo4j', 'sudri@123'),
+    {
+      //Cloud DB
+      //url:bolt://hobby-mnebmdhpafecgbkeffhkbnel.dbs.graphenedb.com:24787
+      //password:b.07RUt0fH9MFy.7t8a3ZTSyt16rq9y
+      //user:admin
+      // maxConnectionLifetime: 60 * 60 * 1000, // 1 hour
+      //maxConnectionPoolSize: 300,
+    }
+  )
+
+console.log('Connected to neo4j')
+} catch (error) {
+  console.log("here err")
+  
+}
+
 
 var mysql = require('mysql')
 
@@ -30,7 +39,6 @@ con.connect(function (err) {
   console.log('Connected to mysql! ')
 })
 
-console.log('Connected to neo4j')
 const cors = require('cors')
 const session = driver.session()
 const session2 = driver.session()
@@ -137,7 +145,7 @@ app.get('/getallingredients', (req, res) => {
 
 app.get('/getallrecipes', (req, res) => {
   console.log('in getallrecipes')
-  let query = `MATCH (n:Recipe) RETURN n limit 5 `
+  let query = `MATCH (n:Recipe) RETURN n  `
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()
@@ -154,7 +162,7 @@ app.get('/getallrecipes', (req, res) => {
     //driver.close()
   })
   resultPromise.catch(err => {
-    console.log(err)
+    console.log(err,"here err")
   })
 })
 
