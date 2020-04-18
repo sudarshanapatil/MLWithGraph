@@ -59,6 +59,7 @@ WITH  SUM(x.rating * y.rating) AS xyDotProduct,
 MERGE (p1)-[s:SIMILARITY]-(p2)
 SET   s.similarity = xyDotProduct / (xLength * yLength)
 
+
 //To get a person has rated which recipes:
 MATCH (:Person {name: 'Pradnya'})-[r:Rated]-(b) RETURN r,b
 //

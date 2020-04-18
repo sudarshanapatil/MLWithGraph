@@ -17,17 +17,17 @@ try {
     }
   )
 
-console.log('Connected to neo4j')
+  console.log('Connected to neo4j')
 } catch (error) {
   console.log("here err")
-  
+
 }
 
 
 var mysql = require('mysql')
 
 var con = mysql.createConnection({
-  host: 'localhost',  user: 'root',
+  host: 'localhost', user: 'root',
   password: 'Sudri@123',
   database: 'mtech_project'
 })
@@ -49,17 +49,16 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.post('/login', (req, res) => {
-  let {name,password} = req.body
+  let { name, password } = req.body
   console.log('in login', req.body)
   let query = `SELECT password FROM user where name='${name}'`
   db.queryAsync(query)
     .then(function (data) {
-      if(data[0].password===password)
-      {
-        res.send({code:200,msg:`Login successful!`})
+      if (data[0].password === password) {
+        res.send({ code: 200, msg: `Login successful!` })
       }
-      else{
-        res.send({code:400,msg:`Unauthorized User`})
+      else {
+        res.send({ code: 400, msg: `Unauthorized User` })
       }
     })
     .catch(err => {
@@ -74,7 +73,7 @@ app.post('/register', (req, res) => {
   db.queryAsync(query)
     .then(function (rows) {
       console.log(rows)
-      res.send({code:200,msg:"successfully inserted!"})
+      res.send({ code: 200, msg: "successfully inserted!" })
     })
     .catch(err => {
       console.log(err)
@@ -82,11 +81,11 @@ app.post('/register', (req, res) => {
 })
 app.post('/raterecipes', (req, res) => {
   //TODO:jwttoken implemetion need to be added
-  
+
   let recipeId = req.body.recipeId
   let rating = req.body.rating
-  let userName = 'Sudarshana'
-  console.log(recipeId,"recipeId",rating,userName)
+  let userName = 'Prajkta'
+  console.log(recipeId, "recipeId", rating, userName)
   console.log('rateRecipes', recipeId)
   let query2 = `MATCH (a:Person),(b:Recipe)
   WHERE a.name = '${userName}' AND b.id = '${recipeId}'
@@ -103,7 +102,7 @@ app.post('/raterecipes', (req, res) => {
       console.log(i['_fields'][0], 'data')
       return i['_fields'][0]
     })
-    let assignNewSimilarity=`MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Rated]-(p2:Person)
+    let assignNewSimilarity = `MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Rated]-(p2:Person)
     WITH  SUM(x.rating * y.rating) AS xyDotProduct,
           SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
           SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,
@@ -145,15 +144,23 @@ app.get('/getallingredients', (req, res) => {
 
 app.get('/getallrecipes', (req, res) => {
   console.log('in getallrecipes')
-  let query = `MATCH (n:Recipe) RETURN n  `
-  const resultPromise = session.run(query)
+  // let query = `MATCH (n:Recipe) RETURN n  `
+  let modifiedQ = `MATCH (r:Recipe)
+  WHERE (r)-[:CONTAINS_INGREDIENT]->()
+  RETURN r.name AS recipe, 
+         [(r)-[:CONTAINS_INGREDIENT]->(i) | i.name] 
+         AS ingredients`
+  const resultPromise = session.run(modifiedQ)
   resultPromise.then(result => {
+    console.log(result.records.length)
     //session.close()
     let ingredients = result.records.map(i => {
-      console.log(i['_fields'][0].properties, 'data')
+      // console.log(i['_fields'][0], 'data')
       return {
-        recipeName: i['_fields'][0].properties.name,
-        id: i['_fields'][0].properties.id
+        // a:''
+        recipeName: i['_fields'][0],
+        ingredients: i['_fields'][1],
+        id: 1
       }
     })
     ingredients = ingredients.sort()
@@ -162,7 +169,7 @@ app.get('/getallrecipes', (req, res) => {
     //driver.close()
   })
   resultPromise.catch(err => {
-    console.log(err,"here err")
+    console.log(err, "here err")
   })
 })
 
@@ -217,16 +224,22 @@ app.post('/getrecipes', (req, res) => {
   }
 })
 
-app.get('/getrecipelevel', (req, res) => {
-  let query = `MATCH (n:Recipe{ skillLevel: 'Easy' }) RETURN n limit 10`
+app.post('/getrecipelevel', (req, res) => {
+  let level=req.body.skillLevel
+  console.log(level,"level")
+  let query = `MATCH (n:Recipe{ skillLevel: '${level}' }) RETURN n limit 10`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()
 
-    let finalData=result.records.map(data => {
-      return {
-        name: data['_fields'][0].properties.name,
-        desc: data['_fields'][0].properties.description
+    let finalData = result.records.map(recipe => {
+      console.log(recipe['_fields'][0].properties,"data")
+      let data=recipe['_fields'][0].properties;
+      return {       
+        name: data.name,
+        desc: data.description,
+        cookingTime:data.cookingTime.low,
+        skillLevel:data.skillLevel
       }
     })
     res.send(finalData)
@@ -245,7 +258,7 @@ app.get('/getall', (req, res) => {
   RETURN r.name AS recipe, 
          [(r)-[:CONTAINS_INGREDIENT]->(i) | i.name] 
          AS ingredients`
-  const resultPromise = session.run(query)
+  
   resultPromise.then(result => {
     //session.close()
     console.log(result, 'data')

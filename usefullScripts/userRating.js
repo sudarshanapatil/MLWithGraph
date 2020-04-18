@@ -65,12 +65,12 @@ addUser = userArr => {
     const resultPromise = session.run(query)
     resultPromise.then(result => {
       //Get recipe Data
-      let count;
-      if(key>20)
-       count=parseInt(key)-20
-       else
-       count=15
-      let getRecipeQ = `MATCH (n:Recipe) RETURN n limit ${count}` 
+      // let count;
+      // if(key>20)
+      //  count=parseInt(key)-20
+      //  else
+      //  count=15
+      let getRecipeQ = `MATCH (n:Recipe) RETURN n limit 8` 
       const recipeData = session.run(getRecipeQ)
       recipeData.then(data => {
         // console.log(data,"recipes")
