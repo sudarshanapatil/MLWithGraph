@@ -124,7 +124,7 @@ app.post('/raterecipes', (req, res) => {
 
 app.get('/getallingredients', (req, res) => {
   console.log('in getallingredients')
-  let query = `MATCH (n:Ingredient) RETURN n limit 50`
+  let query = `MATCH (n:Ingredient) RETURN n`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()
@@ -244,7 +244,7 @@ app.post('/getrecipelevel', (req, res) => {
     })
     res.send(finalData)
     // on application exit:
-    driver.close()
+    // driver.close()
   })
   resultPromise.catch(err => {
     console.log(err)
@@ -292,8 +292,9 @@ app.get('/getdetailedrecipe', (req, res) => {
 })
 
 app.post('/getuserrecommendation', (req, res) => {
-  console.log('in getuserrecommendation')
-  let userName = req.body.userName
+  console.log('in getuserrecommendation ',req.body.userName)
+  let userName = req.body.userName.userName
+  //let userName='Sudarshana'
   let query = `MATCH    (b:Person)-[r:Rated]->(m:Recipe), (b)-[s:SIMILARITY]-(a:Person {name:'${userName}'})
   WHERE    NOT((a)-[:Rated]->(m))
   WITH     m, s.similarity AS similarity, r.rating AS rating
