@@ -108,3 +108,19 @@ getRecipe()
 //     }
 //   });
 
+`MERGE (PaneerLazeez:Recipe {id: 19898})
+ SET PaneerLazeez.cookingTime = 8966,
+     PaneerLazeez.preparationTime = 676,
+     PaneerLazeez.name = 'PaneerLazeez',
+     PaneerLazeez.description = "test",
+     PaneerLazeez.skillLevel = 'Easy';
+   WITH ['as','dsd'] AS ingredients
+   MATCH (PaneerLazeez:Recipe {id:19898})
+   FOREACH (ingredient IN ingredients |
+    MERGE (i:Ingredient {name: ingredient})
+    MERGE (PaneerLazeez)-[:CONTAINS_INGREDIENT]->(i)
+  );
+  WITH ['sudarshana'] AS author
+  MATCH (PaneerLazeez:Recipe {id:19898})
+  MERGE (a:Author {name: "sudarshana"})  
+  MERGE (a)-[:WROTE]->(PaneerLazeez)`
