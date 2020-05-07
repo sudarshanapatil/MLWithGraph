@@ -34,9 +34,8 @@ var con = mysql.createConnection({
 const db = bluebird.promisifyAll(con)
 
 con.connect(function (err) {
-  if (err) {}
-  else
-  console.log('Connected to mysql! ')
+  if (err) {
+  } else console.log('Connected to mysql! ')
 })
 
 const cors = require('cors')
@@ -251,11 +250,10 @@ app.post('/getrecipelevel', (req, res) => {
 })
 
 app.post('/addrecipe', (req, res) => {
-  console.log("in ==")
   let {
     recipeName,
-    ingredients,
-    auther,
+    selected,
+    autherName,
     preparationTime,
     cookingTime,
     skillLevel,
@@ -263,55 +261,47 @@ app.post('/addrecipe', (req, res) => {
   } = req.body
   console.log(
     recipeName,
-    ingredients,
-    auther,
+    selected,
+    autherName,
     preparationTime,
     cookingTime,
     skillLevel,
     description,
     'level'
   )
-  let recipeId = 767676;
-  let ingredientslist="'"+ingredients.join("','")+"'"
+  let recipeId = 89676762
+  let ingredientslist = "'" + selected.join("','") + "'"
   console.log(ingredientslist)
-  let query = `MERGE (${recipeName}:Recipe {id: ${recipeId}})
+  let query1 = `MERGE (${recipeName}:Recipe {id: ${recipeId}})
   SET ${recipeName}.cookingTime = ${cookingTime},
       ${recipeName}.preparationTime = ${preparationTime},
       ${recipeName}.name = '${recipeName}',
       ${recipeName}.description =  '${description}',
-      ${recipeName}.skillLevel = ' ${skillLevel}';
-    WITH  [${ingredientslist}] AS ingredients
-    MATCH (${recipeName}:Recipe {id:${recipeId}})
-    FOREACH (ingredient IN ingredients |
-     MERGE (i:Ingredient {name: ingredient})
-     MERGE (${recipeName})-[:CONTAINS_INGREDIENT]->(i)
-   );
-   WITH [' ${auther}'] AS author
+      ${recipeName}.skillLevel = ' ${skillLevel}';`
+  let query2 = `WITH  [${ingredientslist}] AS ingredients
+      MATCH (${recipeName}:Recipe {id:${recipeId}})
+      FOREACH (ingredient IN ingredients |
+       MERGE (i:Ingredient {name: ingredient})
+       MERGE (${recipeName})-[:CONTAINS_INGREDIENT]->(i)
+     );`
+  let query3 = `WITH [' ${autherName}'] AS author
    MATCH (${recipeName}:Recipe {id:${recipeId}})
-   MERGE (a:Author {name: " ${auther}"})  
-   MERGE (a)-[:WROTE]->(${recipeName})`
+   MERGE (a:Author {name: " ${autherName}"})  
+   MERGE (a)-[:WROTE]->(${recipeName});`
 
-   console.log(query,"jhjhj")
-  // const resultPromise = session.run(query)
-  // resultPromise.then(result => {
-  //   //session.close()
-  //   let finalData = result.records.map(recipe => {
-  //     console.log(recipe['_fields'][0].properties, 'data')
-  //     let data = recipe['_fields'][0].properties
-  //     return {
-  //       name: data.name,
-  //       desc: data.description,
-  //       cookingTime: data.cookingTime.low,
-  //       skillLevel: data.skillLevel
-  //     }
-  //   })
-  //   res.send(finalData)
-  //   // on application exit:
-  //   // driver.close()
-  // })
-  // resultPromise.catch(err => {
-  //   console.log(err)
-  // })
+  // console.log(query, 'jhjhj')
+  const resultPromise1 = session.run(query1)
+  resultPromise1.then(result => {
+    const resultPromise2 = session.run(query2)
+    resultPromise2.then(result => {
+      const resultPromise3 = session.run(query3)
+      res.send({ code: 200 })
+    })
+  }) 
+  
+  
+ 
+  
 })
 
 app.get('/getall', (req, res) => {
