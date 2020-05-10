@@ -2,25 +2,16 @@ const express = require('express')
 const morgan = require('morgan')
 const bluebird = require('bluebird')
 const neo4j = require('neo4j-driver')
-
 try {
   var driver = neo4j.driver(
     'bolt://localhost:11002',
     neo4j.auth.basic('neo4j', 'sudri@123'),
     {
-      //Cloud DB
-      //url:bolt://hobby-mnebmdhpafecgbkeffhkbnel.dbs.graphenedb.com:24787
-      //password:b.07RUt0fH9MFy.7t8a3ZTSyt16rq9y
-      //user:admin
-      // maxConnectionLifetime: 60 * 60 * 1000, // 1 hour
-      //maxConnectionPoolSize: 300,
     }
   )
-
   console.log('Connected to neo4j')
 } catch (error) {
-  console.log("here err")
-
+  console.log("Error", error)
 }
 
 
@@ -84,13 +75,17 @@ app.post('/raterecipes', (req, res) => {
 
   let recipeId = req.body.recipeId
   let rating = req.body.rating
-  let userName = 'Prajkta'
+  let userName = 'Pradnya'
   console.log(recipeId, "recipeId", rating, userName)
   console.log('rateRecipes', recipeId)
   let query2 = `MATCH (a:Person),(b:Recipe)
   WHERE a.name = '${userName}' AND b.id = '${recipeId}'
-  Merge (a)-[r:Rated { rating:${rating} }]->(b)
-  RETURN type(r), r.name`
+  Merge (a)-[r:Rated ]->(b)
+  set  r.rating=${rating}`
+
+  // let query2=`MATCH (a:Person)-[r]-(b:Recipe)
+  // WHERE a.name = '${userName}' AND b.id = '${recipeId}'
+  // set r.rating=${rating}`
 
   let query = `MATCH (n { id: '${recipeId}' })
   SET n.skillLevel = 'Most Difficult'
@@ -147,7 +142,7 @@ app.get('/getallrecipes', (req, res) => {
   // let query = `MATCH (n:Recipe) RETURN n  `
   let modifiedQ = `MATCH (r:Recipe)
   WHERE (r)-[:CONTAINS_INGREDIENT]->()
-  RETURN r.name AS recipe, 
+  RETURN r.name AS recipe,r.id as id, 
          [(r)-[:CONTAINS_INGREDIENT]->(i) | i.name] 
          AS ingredients`
   const resultPromise = session.run(modifiedQ)
@@ -159,8 +154,9 @@ app.get('/getallrecipes', (req, res) => {
       return {
         // a:''
         recipeName: i['_fields'][0],
-        ingredients: i['_fields'][1],
-        id: 1
+        id: i['_fields'][1],
+        ingredients: i['_fields'][2]
+
       }
     })
     ingredients = ingredients.sort()
@@ -225,21 +221,21 @@ app.post('/getrecipes', (req, res) => {
 })
 
 app.post('/getrecipelevel', (req, res) => {
-  let level=req.body.skillLevel
-  console.log(level,"level")
-  let query = `MATCH (n:Recipe{ skillLevel: '${level}' }) RETURN n limit 10`
+  let level = req.body.skillLevel
+  console.log(level, "level")
+  let query = `MATCH (n:Recipe{ skillLevel: '${level}' }) RETURN n limit 20`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()
 
     let finalData = result.records.map(recipe => {
-      console.log(recipe['_fields'][0].properties,"data")
-      let data=recipe['_fields'][0].properties;
-      return {       
+      console.log(recipe['_fields'][0].properties, "data")
+      let data = recipe['_fields'][0].properties;
+      return {
         name: data.name,
         desc: data.description,
-        cookingTime:data.cookingTime.low,
-        skillLevel:data.skillLevel
+        cookingTime: data.cookingTime.low,
+        skillLevel: data.skillLevel
       }
     })
     res.send(finalData)
@@ -258,7 +254,7 @@ app.get('/getall', (req, res) => {
   RETURN r.name AS recipe, 
          [(r)-[:CONTAINS_INGREDIENT]->(i) | i.name] 
          AS ingredients`
-  
+
   resultPromise.then(result => {
     //session.close()
     console.log(result, 'data')
@@ -292,8 +288,8 @@ app.get('/getdetailedrecipe', (req, res) => {
 })
 
 app.post('/getuserrecommendation', (req, res) => {
-  console.log('in getuserrecommendation ',req.body.userName)
-  let userName = req.body.userName.userName
+  console.log('in getuserrecommendation ', req.body.userName)
+  let userName = req.body.userName
   //let userName='Sudarshana'
   let query = `MATCH    (b:Person)-[r:Rated]->(m:Recipe), (b)-[s:SIMILARITY]-(a:Person {name:'${userName}'})
   WHERE    NOT((a)-[:Rated]->(m))

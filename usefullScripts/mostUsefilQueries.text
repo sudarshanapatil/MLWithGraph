@@ -19,3 +19,7 @@ RETURN r.name AS recipe,
        [(r)-[:CONTAINS_INGREDIENT]->(i) | i.name] 
        AS ingredients
 /////////////////////////////////////////////////////////////////////
+
+MATCH (a:Person)-[r]-(b:Recipe)
+ WHERE a.name = 'Sudarshana' AND b.id = '95358'
+ set r.rating=8
