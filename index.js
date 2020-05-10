@@ -11,14 +11,18 @@ try {
   )
   console.log('Connected to neo4j')
 } catch (error) {
+<<<<<<< HEAD
   console.log("Error", error)
+=======
+  console.log('here err')
+>>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
 }
-
 
 var mysql = require('mysql')
 
 var con = mysql.createConnection({
-  host: 'localhost', user: 'root',
+  host: 'localhost',
+  user: 'root',
   password: 'Sudri@123',
   database: 'mtech_project'
 })
@@ -26,8 +30,8 @@ var con = mysql.createConnection({
 const db = bluebird.promisifyAll(con)
 
 con.connect(function (err) {
-  if (err) throw err
-  console.log('Connected to mysql! ')
+  if (err) {
+  } else console.log('Connected to mysql! ')
 })
 
 const cors = require('cors')
@@ -47,8 +51,7 @@ app.post('/login', (req, res) => {
     .then(function (data) {
       if (data[0].password === password) {
         res.send({ code: 200, msg: `Login successful!` })
-      }
-      else {
+      } else {
         res.send({ code: 400, msg: `Unauthorized User` })
       }
     })
@@ -64,7 +67,7 @@ app.post('/register', (req, res) => {
   db.queryAsync(query)
     .then(function (rows) {
       console.log(rows)
-      res.send({ code: 200, msg: "successfully inserted!" })
+      res.send({ code: 200, msg: 'successfully inserted!' })
     })
     .catch(err => {
       console.log(err)
@@ -75,8 +78,13 @@ app.post('/raterecipes', (req, res) => {
 
   let recipeId = req.body.recipeId
   let rating = req.body.rating
+<<<<<<< HEAD
   let userName = 'Pradnya'
   console.log(recipeId, "recipeId", rating, userName)
+=======
+  let userName = 'Prajkta'
+  console.log(recipeId, 'recipeId', rating, userName)
+>>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
   console.log('rateRecipes', recipeId)
   let query2 = `MATCH (a:Person),(b:Recipe)
   WHERE a.name = '${userName}' AND b.id = '${recipeId}'
@@ -165,7 +173,7 @@ app.get('/getallrecipes', (req, res) => {
     //driver.close()
   })
   resultPromise.catch(err => {
-    console.log(err, "here err")
+    console.log(err, 'here err')
   })
 })
 
@@ -222,15 +230,25 @@ app.post('/getrecipes', (req, res) => {
 
 app.post('/getrecipelevel', (req, res) => {
   let level = req.body.skillLevel
+<<<<<<< HEAD
   console.log(level, "level")
   let query = `MATCH (n:Recipe{ skillLevel: '${level}' }) RETURN n limit 20`
+=======
+  console.log(level, 'level')
+  let query = `MATCH (n:Recipe{ skillLevel: '${level}' }) RETURN n limit 10`
+>>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()
 
     let finalData = result.records.map(recipe => {
+<<<<<<< HEAD
       console.log(recipe['_fields'][0].properties, "data")
       let data = recipe['_fields'][0].properties;
+=======
+      console.log(recipe['_fields'][0].properties, 'data')
+      let data = recipe['_fields'][0].properties
+>>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
       return {
         name: data.name,
         desc: data.description,
@@ -245,6 +263,61 @@ app.post('/getrecipelevel', (req, res) => {
   resultPromise.catch(err => {
     console.log(err)
   })
+})
+
+app.post('/addrecipe', (req, res) => {
+  let {
+    recipeName,
+    selected,
+    autherName,
+    preparationTime,
+    cookingTime,
+    skillLevel,
+    description
+  } = req.body
+  console.log(
+    recipeName,
+    selected,
+    autherName,
+    preparationTime,
+    cookingTime,
+    skillLevel,
+    description,
+    'level'
+  )
+  let recipeId = 89676762
+  let ingredientslist = "'" + selected.join("','") + "'"
+  console.log(ingredientslist)
+  let query1 = `MERGE (${recipeName}:Recipe {id: ${recipeId}})
+  SET ${recipeName}.cookingTime = ${cookingTime},
+      ${recipeName}.preparationTime = ${preparationTime},
+      ${recipeName}.name = '${recipeName}',
+      ${recipeName}.description =  '${description}',
+      ${recipeName}.skillLevel = ' ${skillLevel}';`
+  let query2 = `WITH  [${ingredientslist}] AS ingredients
+      MATCH (${recipeName}:Recipe {id:${recipeId}})
+      FOREACH (ingredient IN ingredients |
+       MERGE (i:Ingredient {name: ingredient})
+       MERGE (${recipeName})-[:CONTAINS_INGREDIENT]->(i)
+     );`
+  let query3 = `WITH [' ${autherName}'] AS author
+   MATCH (${recipeName}:Recipe {id:${recipeId}})
+   MERGE (a:Author {name: " ${autherName}"})  
+   MERGE (a)-[:WROTE]->(${recipeName});`
+
+  // console.log(query, 'jhjhj')
+  const resultPromise1 = session.run(query1)
+  resultPromise1.then(result => {
+    const resultPromise2 = session.run(query2)
+    resultPromise2.then(result => {
+      const resultPromise3 = session.run(query3)
+      res.send({ code: 200 })
+    })
+  }) 
+  
+  
+ 
+  
 })
 
 app.get('/getall', (req, res) => {
@@ -289,7 +362,11 @@ app.get('/getdetailedrecipe', (req, res) => {
 
 app.post('/getuserrecommendation', (req, res) => {
   console.log('in getuserrecommendation ', req.body.userName)
+<<<<<<< HEAD
   let userName = req.body.userName
+=======
+  let userName = req.body.userName.userName
+>>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
   //let userName='Sudarshana'
   let query = `MATCH    (b:Person)-[r:Rated]->(m:Recipe), (b)-[s:SIMILARITY]-(a:Person {name:'${userName}'})
   WHERE    NOT((a)-[:Rated]->(m))
