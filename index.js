@@ -11,11 +11,9 @@ try {
   )
   console.log('Connected to neo4j')
 } catch (error) {
-<<<<<<< HEAD
+
   console.log("Error", error)
-=======
-  console.log('here err')
->>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
+
 }
 
 var mysql = require('mysql')
@@ -78,13 +76,8 @@ app.post('/raterecipes', (req, res) => {
 
   let recipeId = req.body.recipeId
   let rating = req.body.rating
-<<<<<<< HEAD
-  let userName = 'Pradnya'
-  console.log(recipeId, "recipeId", rating, userName)
-=======
   let userName = 'Prajkta'
   console.log(recipeId, 'recipeId', rating, userName)
->>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
   console.log('rateRecipes', recipeId)
   let query2 = `MATCH (a:Person),(b:Recipe)
   WHERE a.name = '${userName}' AND b.id = '${recipeId}'
@@ -230,25 +223,15 @@ app.post('/getrecipes', (req, res) => {
 
 app.post('/getrecipelevel', (req, res) => {
   let level = req.body.skillLevel
-<<<<<<< HEAD
   console.log(level, "level")
   let query = `MATCH (n:Recipe{ skillLevel: '${level}' }) RETURN n limit 20`
-=======
-  console.log(level, 'level')
-  let query = `MATCH (n:Recipe{ skillLevel: '${level}' }) RETURN n limit 10`
->>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()
 
     let finalData = result.records.map(recipe => {
-<<<<<<< HEAD
       console.log(recipe['_fields'][0].properties, "data")
       let data = recipe['_fields'][0].properties;
-=======
-      console.log(recipe['_fields'][0].properties, 'data')
-      let data = recipe['_fields'][0].properties
->>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
       return {
         name: data.name,
         desc: data.description,
@@ -273,7 +256,8 @@ app.post('/addrecipe', (req, res) => {
     preparationTime,
     cookingTime,
     skillLevel,
-    description
+    description,
+    procedure
   } = req.body
   console.log(
     recipeName,
@@ -283,6 +267,7 @@ app.post('/addrecipe', (req, res) => {
     cookingTime,
     skillLevel,
     description,
+    procedure,  
     'level'
   )
   let recipeId = 89676762
@@ -293,6 +278,7 @@ app.post('/addrecipe', (req, res) => {
       ${recipeName}.preparationTime = ${preparationTime},
       ${recipeName}.name = '${recipeName}',
       ${recipeName}.description =  '${description}',
+      ${recipeName}.procedure =  '${procedure}',
       ${recipeName}.skillLevel = ' ${skillLevel}';`
   let query2 = `WITH  [${ingredientslist}] AS ingredients
       MATCH (${recipeName}:Recipe {id:${recipeId}})
@@ -305,7 +291,9 @@ app.post('/addrecipe', (req, res) => {
    MERGE (a:Author {name: " ${autherName}"})  
    MERGE (a)-[:WROTE]->(${recipeName});`
 
-  // console.log(query, 'jhjhj')
+  console.log(query1, 'query1')
+  console.log(query2, 'query2')
+  console.log(query3, 'query3')
   const resultPromise1 = session.run(query1)
   resultPromise1.then(result => {
     const resultPromise2 = session.run(query2)
@@ -362,11 +350,7 @@ app.get('/getdetailedrecipe', (req, res) => {
 
 app.post('/getuserrecommendation', (req, res) => {
   console.log('in getuserrecommendation ', req.body.userName)
-<<<<<<< HEAD
   let userName = req.body.userName
-=======
-  let userName = req.body.userName.userName
->>>>>>> 650422661f15c0ab01b3c894046d7a864996a868
   //let userName='Sudarshana'
   let query = `MATCH    (b:Person)-[r:Rated]->(m:Recipe), (b)-[s:SIMILARITY]-(a:Person {name:'${userName}'})
   WHERE    NOT((a)-[:Rated]->(m))
