@@ -5,6 +5,10 @@ match  (p1:Person {name:'Jagrutee'})-[r1:Rated]->(m:Recipe)<-[r2:Rated]-(p2:Pers
 
 NOT RATED
 
+
+//get recipes wrote by Auther
+MATCH (n { name: ' sudarshana patil' })-[r:WROTE]->(m) return n,m
+
 MATCH    (b:Person)-[r:Rated]->(m:Recipe),
 (a:Person {name:'Jagrutee'})
 WHERE    NOT((a)-[:Rated]->(m))
@@ -12,9 +16,9 @@ RETURN m,r,b
 
 
 //Update relationship properties
-MATCH (a:Person)-[r]-(b:Recipe)
- WHERE a.name = 'Sudarshana' AND b.id = '95358'
- set r.rating=8
+MATCH (a:Auther)-[r]-(b:Recipe)
+WHERE a.name = 'Sudarshana' 
+return a,r
 
 
 

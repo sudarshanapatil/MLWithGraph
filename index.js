@@ -248,6 +248,24 @@ app.post('/getrecipelevel', (req, res) => {
   })
 })
 
+app.post('/getwrittenrecipe', (req, res) => {
+  let autherName = req.body.autherName
+  // console.log(level, "level")
+  let query = `MATCH (n { name: '${autherName}' })-[r:WROTE]->(m) return m`
+  const resultPromise = session.run(query)
+  resultPromise.then(result => {
+    // console.log(result,"res");
+    let finalData = result.records.map(recipe => {
+      console.log(recipe['_fields'][0].properties, "data")
+      return recipe['_fields'][0].properties      
+    })
+    res.send(finalData)
+  })
+  resultPromise.catch(err => {
+    console.log(err)
+  })
+})
+
 app.post('/addrecipe', (req, res) => {
   let {
     recipeName,
