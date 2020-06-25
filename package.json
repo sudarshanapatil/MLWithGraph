@@ -28,6 +28,8 @@
     "morgan": "^1.9.1",
     "mysql": "^2.18.1",
     "neo4j-driver": "^4.0.1",
-    "react-bootstrap": "^1.0.0-beta.16"
+    "random-number": "0.0.9",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "request": "^2.88.2"
   }
 }

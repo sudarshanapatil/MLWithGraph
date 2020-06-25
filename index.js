@@ -2,6 +2,12 @@ const express = require('express')
 const morgan = require('morgan')
 const bluebird = require('bluebird')
 const neo4j = require('neo4j-driver')
+const rn = require('random-number');
+const options = {
+  min: 8000
+  , max: 100000
+  , integer: true
+}
 try {
   var driver = neo4j.driver(
     'bolt://localhost:11002',
@@ -84,10 +90,6 @@ app.post('/raterecipes', (req, res) => {
   Merge (a)-[r:Rated ]->(b)
   set  r.rating=${rating}`
 
-  // let query2=`MATCH (a:Person)-[r]-(b:Recipe)
-  // WHERE a.name = '${userName}' AND b.id = '${recipeId}'
-  // set r.rating=${rating}`
-
   let query = `MATCH (n { id: '${recipeId}' })
   SET n.skillLevel = 'Most Difficult'
   RETURN n`
@@ -132,6 +134,25 @@ app.get('/getallingredients', (req, res) => {
     res.send(ingredients)
     // on application exit:
     //driver.close()
+  })
+  resultPromise.catch(err => {
+    console.log(err)
+  })
+})
+
+app.post('/getauthorRecipes', (req, res) => {
+  console.log('in getallingredients')
+  let authorName = req.body.authorName;
+  let query = `MATCH (p1:Author {name:${authorName}})-[s:WROTE]-(p2:Recipe) return p2.name,p2.description`
+  const resultPromise = session.run(query)
+  resultPromise.then(result => {
+    //session.close()
+    console.log(result, 'data')
+    let ingredients = result.records.map(i => {
+      return i['_fields'][0].properties.name
+    })
+    ingredients = ingredients.sort()
+    res.send(ingredients)
   })
   resultPromise.catch(err => {
     console.log(err)
@@ -223,14 +244,12 @@ app.post('/getrecipes', (req, res) => {
 
 app.post('/getrecipelevel', (req, res) => {
   let level = req.body.skillLevel
-  console.log(level, "level")
   let query = `MATCH (n:Recipe{ skillLevel: '${level}' }) RETURN n limit 20`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
     //session.close()
 
     let finalData = result.records.map(recipe => {
-      console.log(recipe['_fields'][0].properties, "data")
       let data = recipe['_fields'][0].properties;
       return {
         name: data.name,
@@ -249,15 +268,16 @@ app.post('/getrecipelevel', (req, res) => {
 })
 
 app.post('/getwrittenrecipe', (req, res) => {
-  let autherName = req.body.autherName
-  // console.log(level, "level")
-  let query = `MATCH (n { name: '${autherName}' })-[r:WROTE]->(m) return m`
+  console.log("hete")
+  let authorName = req.body.authorName
+  console.log(authorName, "authorName")
+  let query = `MATCH (n { name: '${authorName}' })-[r:WROTE]->(m) return m`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
-    // console.log(result,"res");
+    console.log(result, "res");
     let finalData = result.records.map(recipe => {
       console.log(recipe['_fields'][0].properties, "data")
-      return recipe['_fields'][0].properties      
+      return recipe['_fields'][0].properties
     })
     res.send(finalData)
   })
@@ -270,7 +290,7 @@ app.post('/addrecipe', (req, res) => {
   let {
     recipeName,
     selected,
-    autherName,
+    authorName,
     preparationTime,
     cookingTime,
     skillLevel,
@@ -280,15 +300,15 @@ app.post('/addrecipe', (req, res) => {
   console.log(
     recipeName,
     selected,
-    autherName,
+    authorName,
     preparationTime,
     cookingTime,
     skillLevel,
     description,
-    procedure,  
+    procedure,
     'level'
   )
-  let recipeId = 89676762
+  let recipeId = rn(options)
   let ingredientslist = "'" + selected.join("','") + "'"
   console.log(ingredientslist)
   let query1 = `MERGE (${recipeName}:Recipe {id: ${recipeId}})
@@ -304,30 +324,27 @@ app.post('/addrecipe', (req, res) => {
        MERGE (i:Ingredient {name: ingredient})
        MERGE (${recipeName})-[:CONTAINS_INGREDIENT]->(i)
      );`
-  let query3 = `WITH [' ${autherName}'] AS author
+  let query3 = `WITH [' ${authorName}'] AS author
    MATCH (${recipeName}:Recipe {id:${recipeId}})
-   MERGE (a:Author {name: " ${autherName}"})  
+   MERGE (a:Author {name:"${authorName}"})  
    MERGE (a)-[:WROTE]->(${recipeName});`
 
-  console.log(query1, 'query1')
-  console.log(query2, 'query2')
-  console.log(query3, 'query3')
   const resultPromise1 = session.run(query1)
   resultPromise1.then(result => {
     const resultPromise2 = session.run(query2)
     resultPromise2.then(result => {
       const resultPromise3 = session.run(query3)
+      console.log("successfully added recipe")
       res.send({ code: 200 })
     })
-  }) 
-  
-  
- 
-  
+  })
+
+
+
+
 })
 
 app.get('/getall', (req, res) => {
-  console.log('in getall')
   const nodeName = `Recipe`
   let query = `MATCH (r:Recipe) WHERE (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {name: "chilli"}) 
   RETURN r.name AS recipe, 
@@ -335,8 +352,6 @@ app.get('/getall', (req, res) => {
          AS ingredients`
 
   resultPromise.then(result => {
-    //session.close()
-    console.log(result, 'data')
     res.send(result)
     // on application exit:
     driver.close()
@@ -355,11 +370,8 @@ app.get('/getdetailedrecipe', (req, res) => {
          AS ingredients`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
-    //session.close()
     console.log(result, 'data')
     res.send(result)
-    // on application exit:
-    // driver.close()
   })
   resultPromise.catch(err => {
     console.log(err)
@@ -404,14 +416,10 @@ app.post('/getsimilaruser', (req, res) => {
   RETURN   p2.name AS Neighbor, sim AS Similarity`
   const resultPromise = session.run(query)
   resultPromise.then(result => {
-    //session.close()
-    //console.log(result, "data")
     let userList = result.records.map(i => {
       return { name: i['_fields'][0], similarity: i['_fields'][1].toFixed(2) }
     })
     res.send(userList)
-    // on application exit:
-    //driver.close()
   })
   resultPromise.catch(err => {
     console.log(err)
