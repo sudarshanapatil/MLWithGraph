@@ -1,10 +1,8 @@
-// router/collections/businesses.js
-// router for ==> /businesses
+
 const db = require('../server.js')
 var express = require('express');
 var jwt = require('jsonwebtoken');
 var router = express.Router();
-// GET /businesses
 router.post('/data', function (req, res) {
  res.status(200).send("received request at http://localhost:3000/businesses");
 });
