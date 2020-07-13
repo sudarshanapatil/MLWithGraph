@@ -53,7 +53,6 @@ app.post('/login', (req, res) => {
   let query = `SELECT password FROM user where name='${name}'`
   db.queryAsync(query)
     .then(function (data) {
-      console.log(data, "===")
       if (data[0].password === password) {
         res.send({ code: 200, msg: `Login successful!` })
       } else {
@@ -67,7 +66,6 @@ app.post('/login', (req, res) => {
 app.post('/register', (req, res) => {
   let userName = req.body.name
   let password = req.body.password
-  console.log('in register', req.body)
   let query = `insert into user (name,password) values ('${userName}',"${password}")`
   db.queryAsync(query)
     .then(function (rows) {
@@ -80,27 +78,19 @@ app.post('/register', (req, res) => {
 })
 app.post('/raterecipes', (req, res) => {
   //TODO:jwttoken implemetion need to be added
-
+console.log(req.body,"====")
   let recipeId = req.body.recipeId
   let rating = req.body.rating
-  let userName = 'Prajkta'
+  let userName = req.body.user
   console.log(recipeId, 'recipeId', rating, userName)
   console.log('rateRecipes', recipeId)
   let query2 = `MATCH (a:Person),(b:Recipe)
   WHERE a.name = '${userName}' AND b.id = '${recipeId}'
   Merge (a)-[r:Rated ]->(b)
   set  r.rating=${rating}`
-
-  let query = `MATCH (n { id: '${recipeId}' })
-  SET n.skillLevel = 'Most Difficult'
-  RETURN n`
   const resultPromise = session.run(query2)
+
   resultPromise.then(result => {
-    //session.close()
-    let ingredients = result.records.map(i => {
-      console.log(i['_fields'][0], 'data')
-      return i['_fields'][0]
-    })
     let assignNewSimilarity = `MATCH (p1:Person)-[x:Rated]->(m:Recipe)<-[y:Rated]-(p2:Person)
     WITH  SUM(x.rating * y.rating) AS xyDotProduct,
           SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,
@@ -108,7 +98,11 @@ app.post('/raterecipes', (req, res) => {
           p1, p2
     MERGE (p1)-[s:SIMILARITY]-(p2)
     SET   s.similarity = xyDotProduct / (xLength * yLength)`
-    res.send({ code: 200, message: 'Successfully saved' })
+    const res2 = session.run(assignNewSimilarity)
+    res2.then(() => {
+      res.send({ code: 200, message: 'Successfully saved' })
+    })
+
   })
   resultPromise.catch(err => {
     console.log(err)
@@ -273,17 +267,6 @@ app.post('/addrecipe', (req, res) => {
     description,
     procedure
   } = req.body
-  console.log(
-    recipeName,
-    selected,
-    authorName,
-    preparationTime,
-    cookingTime,
-    skillLevel,
-    description,
-    procedure,
-    'level'
-  )
   let recipeId = rn(options)
   let ingredientslist = "'" + selected.join("','") + "'"
   console.log(ingredientslist)
@@ -305,33 +288,15 @@ app.post('/addrecipe', (req, res) => {
    MERGE (a:Author {name:"${authorName}"})  
    MERGE (a)-[:WROTE]->(${recipeName});`
   let query4 = `MATCH (n { name: '${authorName}' }) - [r: WROTE] -> (m) return m`
-  // const resultPromise1 = session.run(query1)
-  // resultPromise1.then(result => {
-  //   const resultPromise2 = session.run(query2)
-  //   resultPromise2.then(result => {
-  //     const resultPromise3 = session.run(query3)
-  //     resultPromise3.then(result => {
-  //       const resultPromise4 = session.run(query4)
-  //       resultPromise4.then(result => {
-  //         let finalData = result.records.map(recipe => {
-  //           console.log(recipe['_fields'][0].properties, "data")
-  //           return recipe['_fields'][0].properties
-  //         })
-  //         console.log("successfully added recipe")
-  //         res.send({ code: 200, authorRecipes: finalData })
-  //         // res.send(finalData)
-  //       })
-  //     })
-  //   })
-  // })
+
   const resultPromise1 = session.run(query1)
-  resultPromise1.then(result =>
+  resultPromise1.then(() =>
     session.run(query2)
   )
     .then(() =>
       session.run(query3)
     )
-    .then(result =>
+    .then(() =>
       session.run(query4)
     )
     .then(result => {
@@ -343,13 +308,6 @@ app.post('/addrecipe', (req, res) => {
       res.send({ code: 200, authorRecipes: finalData })
       // res.send(finalData)
     })
-
-
-
-
-
-
-
 })
 
 app.get('/getall', (req, res) => {
