@@ -1,6 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
-const bluebird = require('bluebird')
+// const bluebird = require('bluebird')
 const neo4j = require('neo4j-driver')
 const rn = require('random-number');
 const options = {
@@ -8,10 +8,18 @@ const options = {
   , max: 100000
   , integer: true
 }
+
+// const DB_URL = 'bolt://localhost:11008';
+// const DB_userName = 'neo4j';
+// const DB_pwd = 'sudri@123';
+const DB_URL = `bolt://54.160.120.22:32854`;
+const DB_userName = 'neo4j';
+const DB_pwd = 'accounts-scale-mail';
+const port = process.env.port ||  1337
 try {
   var driver = neo4j.driver(
-    'bolt://localhost:11008',
-    neo4j.auth.basic('neo4j', 'sudri@123'),
+    DB_URL,
+    neo4j.auth.basic(DB_userName, DB_pwd),
     {
     }
   )
@@ -20,21 +28,21 @@ try {
   console.log("Error", error)
 }
 
-var mysql = require('mysql')
+// var mysql = require('mysql')
 
-var con = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Sudri@123',
-  database: 'mtech_project'
-})
+// var con = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: 'Sudri@123',
+//   database: 'mtech_project'
+// })
 
-const db = bluebird.promisifyAll(con)
+// const db = bluebird.promisifyAll(con)
 
-con.connect(function (err) {
-  if (err) {
-  } else console.log('Connected to mysql! ')
-})
+// con.connect(function (err) {
+//   if (err) {
+//   } else console.log('Connected to mysql! ')
+// })
 
 const cors = require('cors')
 const session = driver.session()
@@ -47,32 +55,33 @@ app.use(express.urlencoded({ extended: true }))
 app.post('/login', async (req, res) => {
   let { name, password } = req.body
   console.log('in login', req.body)
-  let query = `SELECT password FROM user where name='${name}'`;
-  try {
-    let data = await db.queryAsync(query);
-    if (data[0].password === password) {
-      res.send({ code: 200, msg: `Login successful!` })
-    } else {
-      res.send({ code: 400, msg: `Unauthorized User` })
-    }
-  } catch (error) {
-    res.send({ code: 500, error })
-  }
+  res.send({ code: 200, msg: `Login successful!` })
+  // let query = `SELECT password FROM user where name='${name}'`;
+  // try {
+  //   let data = await db.queryAsync(query);
+  //   if (data[0].password === password) {
+  //     res.send({ code: 200, msg: `Login successful!` })
+  //   } else {
+  //     res.send({ code: 400, msg: `Unauthorized User` })
+  //   }
+  // } catch (error) {
+  //   res.send({ code: 500, error })
+  // }
 })
 
 app.post('/register', async (req, res) => {
   let userName = req.body.name
   let password = req.body.password
-  let query = `insert into user (name,password) values ('${userName}',"${password}")`;
-  try {
-    await db.queryAsync(query);
-    res.send({ code: 200, msg: 'successfully inserted!' })
-  } catch (error) {
-    res.send({ code: 500, error })
-  }
-
-
+  res.send({ code: 200, msg: 'successfully inserted!' })
+  // let query = `insert into user (name,password) values ('${userName}',"${password}")`;
+  // try {
+  //   // await db.queryAsync(query);
+  //   res.send({ code: 200, msg: 'successfully inserted!' })
+  // } catch (error) {
+  //   res.send({ code: 500, error })
+  // }
 })
+
 app.post('/raterecipes', async (req, res) => {
   //TODO:jwttoken implemetion need to be added
   console.log(req.body, "====")
@@ -208,6 +217,7 @@ app.post('/getwrittenrecipe', async (req, res) => {
     })
     res.send(finalData)
   } catch (error) {
+    console.log(err)
     res.send({ code: 500, error })
   }
 })
@@ -251,7 +261,7 @@ app.post('/addrecipe', async (req, res) => {
     await session.run(query3)
     let result = await session.run(query4)
     let finalData = result.records.map(recipe => {
-      console.log(recipe['_fields'][0].properties, "data")
+      // console.log(recipe['_fields'][0].properties, "data")
       return recipe['_fields'][0].properties
     })
     console.log("successfully added recipe")
@@ -302,6 +312,6 @@ app.post('/getsimilaruser', async (req, res) => {
   }
 })
 // Starting server
-const port = 1337
+
 app.listen(port)
 console.log('Server Started on port : ' + port)
