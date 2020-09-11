@@ -15,7 +15,7 @@ const options = {
 const DB_URL = `bolt://54.160.120.22:32854`;
 const DB_userName = 'neo4j';
 const DB_pwd = 'accounts-scale-mail';
-const port = process.env.port ||  1337
+const port = process.env.PORT ||  1337
 try {
   var driver = neo4j.driver(
     DB_URL,
